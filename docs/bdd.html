@@ -1,0 +1,233 @@
+<!doctype html>
+<title>Learn BDD by testing resume-app, three ways</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #eef0f0; --surface: #ffffff; --surface-2: #e3e8ea;
+    --ink: #1b2430; --ink-soft: #56636f; --line: #c7d0d4;
+    --accent: #2b5d8c; --accent-soft: #dce7f0;
+    --success: #3f7d58; --success-soft: #dfeee5;
+    --warn: #b5651d; --warn-soft: #f3e3d2;
+    --font-display: Iowan Old Style, "Palatino Linotype", Palatino, Georgia, serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10161d; --surface: #182029; --surface-2: #1f2833;
+      --ink: #dde3e8; --ink-soft: #93a2ac; --line: #2b3743;
+      --accent: #6ba8da; --accent-soft: #1c2c3a;
+      --success: #6fbe8c; --success-soft: #17281f;
+      --warn: #d9a15b; --warn-soft: #2b2013;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10161d; --surface: #182029; --surface-2: #1f2833;
+    --ink: #dde3e8; --ink-soft: #93a2ac; --line: #2b3743;
+    --accent: #6ba8da; --accent-soft: #1c2c3a;
+    --success: #6fbe8c; --success-soft: #17281f;
+    --warn: #d9a15b; --warn-soft: #2b2013;
+  }
+  :root[data-theme="light"] {
+    --bg: #eef0f0; --surface: #ffffff; --surface-2: #e3e8ea;
+    --ink: #1b2430; --ink-soft: #56636f; --line: #c7d0d4;
+    --accent: #2b5d8c; --accent-soft: #dce7f0;
+    --success: #3f7d58; --success-soft: #dfeee5;
+    --warn: #b5651d; --warn-soft: #f3e3d2;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--font-body); font-size: 16px; line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { max-width: 800px; margin: 0 auto; padding: clamp(28px, 5vw, 64px) clamp(18px, 4vw, 28px) 80px; }
+  a { color: var(--accent); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  p { max-width: 68ch; }
+
+  .breadcrumb { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--ink-soft); margin: 0 0 18px; }
+  header.masthead { border-bottom: 1px solid var(--line); padding-bottom: 22px; margin-bottom: 44px; }
+  .eyebrow { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 8px; }
+  h1 { font-family: var(--font-display); font-size: clamp(1.7rem, 1.3rem + 1.6vw, 2.3rem); font-weight: 600; margin: 0 0 10px; text-wrap: balance; }
+  .dek { font-size: 1.0625rem; color: var(--ink-soft); max-width: 62ch; margin: 0 0 4px; }
+  .meta { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--ink-soft); margin-top: 14px; }
+
+  section { margin-bottom: 50px; }
+  section > h2 { font-family: var(--font-display); font-size: 1.375rem; font-weight: 600; margin: 0 0 6px; display: flex; align-items: baseline; gap: 10px; }
+  section > h2 .num { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--ink-soft); font-weight: 400; }
+  section > .lede { color: var(--ink-soft); max-width: 68ch; margin: 0 0 22px; }
+  .prose p { margin: 0 0 14px; }
+  .prose p:last-child { margin-bottom: 0; }
+
+  .concept { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 12px 16px; margin: 12px 0; font-size: 0.9375rem; }
+  .concept p { margin: 0; max-width: none; }
+  .concept .label { font-family: var(--font-mono); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); display: block; margin-bottom: 4px; }
+
+  .callout { background: var(--warn-soft); border: 1px solid var(--warn); border-radius: 6px; padding: 14px 18px; font-size: 0.9375rem; margin: 18px 0; }
+  .callout p { max-width: none; margin: 0; }
+
+  pre { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; overflow-x: auto; font-family: var(--font-mono); font-size: 0.8125rem; line-height: 1.55; margin: 10px 0; }
+  pre.cmd { border-left: 3px solid var(--ink-soft); }
+  pre.cmd::before { content: "$ "; color: var(--ink-soft); }
+  pre.output { background: var(--surface-2); color: var(--ink-soft); }
+  pre .c { color: var(--ink-soft); }
+
+  .table-wrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.9375rem; }
+  th, td { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); font-weight: 600; }
+  td code { font-family: var(--font-mono); background: var(--surface-2); padding: 1px 6px; border-radius: 3px; font-size: 0.85em; }
+
+  /* ---------- tabs ---------- */
+  .tabs { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .tab-buttons { display: flex; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .tab-btn { flex: 1; min-width: 140px; font-family: var(--font-mono); font-size: 0.8125rem; padding: 12px 14px; background: var(--surface-2); border: none; border-right: 1px solid var(--line); color: var(--ink-soft); cursor: pointer; text-align: center; }
+  .tab-btn:last-child { border-right: none; }
+  .tab-btn[aria-selected="true"] { background: var(--surface); color: var(--accent); font-weight: 600; }
+  .tab-panel { display: none; padding: 20px; }
+  .tab-panel.is-active { display: block; }
+  .tab-panel h4 { margin: 0 0 8px; font-size: 1rem; }
+  .tab-panel .annotation { font-size: 0.9375rem; color: var(--ink-soft); margin-top: 12px; }
+  .tab-panel .annotation b { color: var(--ink); }
+
+  .practice { display: flex; flex-direction: column; gap: 10px; }
+  .practice li { list-style: none; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px 16px; font-size: 0.9375rem; }
+  .practice .stack-tag { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-soft); border: 1px solid var(--line); border-radius: 3px; padding: 1px 7px; margin-right: 6px; }
+  .practice code { font-family: var(--font-mono); background: var(--surface-2); padding: 1px 6px; border-radius: 3px; font-size: 0.85em; }
+
+  .nav-footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; border-top: 1px solid var(--line); padding-top: 20px; margin-top: 8px; font-size: 0.9375rem; }
+  footer.page-footer { border-top: 1px solid var(--line); padding-top: 18px; color: var(--ink-soft); font-size: 0.8125rem; margin-top: 40px; }
+</style>
+
+<div class="page">
+
+  <p class="breadcrumb"><a href="index.html">learning-lab</a> / BDD tutorial</p>
+
+  <header class="masthead">
+    <p class="eyebrow">tutorial · build along</p>
+    <h1>Learn BDD by testing resume-app, three ways</h1>
+    <p class="dek">Not a fourth automation library — a different way of <em>writing down</em> what's under test, on top of tools already covered. The same five scenarios, expressed once in Gherkin, wired up three different ways: pytest-bdd, Behave, and Cucumber.js.</p>
+    <p class="meta">~15 minutes · needs resume-app running, Python 3, Node.js, and a real Chrome install</p>
+  </header>
+
+  <section aria-labelledby="h-what">
+    <h2 id="h-what"><span class="num">01</span> What BDD actually buys you</h2>
+    <div class="prose">
+      <div class="concept">
+        <span class="label">concept</span>
+        <p><b>Gherkin</b> is a plain-language format (<code>Given</code>/<code>When</code>/<code>Then</code>) for describing behavior in a <code>.feature</code> file. The point isn't the syntax — it's that the same file a non-programmer can read is the literal thing the test runner executes, not documentation that quietly drifts out of sync with what's actually tested. Each Gherkin line is matched, by its exact wording, to a "step definition" — a real function in Python or JS that does the actual work.</p>
+      </div>
+      <p>All three tools here execute the identical scenario file:</p>
+      <pre>Feature: Resume list and detail
+
+  Scenario: Downloading a PDF
+    When I download the PDF for "divya-kodukula"
+    Then the downloaded file should be a valid PDF</pre>
+      <p>Five scenarios total: browsing the list, viewing a resume, the not-found case, and both downloads — same coverage as the other UI stacks, described differently.</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-compare">
+    <h2 id="h-compare"><span class="num">02</span> The same step, wired three ways</h2>
+    <p class="lede">Same Gherkin line: <code>Then I should see a link for "divya-kodukula"</code>. Three different step-definition conventions underneath.</p>
+    <div class="tabs">
+      <div class="tab-buttons" role="tablist">
+        <button class="tab-btn" role="tab" aria-selected="true" data-tab="pytest">pytest-bdd</button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="behave">Behave</button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="cucumber">Cucumber.js</button>
+      </div>
+
+      <div class="tab-panel is-active" data-panel="pytest">
+        <h4>bdd-pytest-bdd/test_resume.py</h4>
+        <pre>scenarios("features/resume.feature")
+
+@then(parsers.parse('I should see a link for "{slug}"'))
+def see_link_for(driver, slug):
+    link = _wait_visible(driver, f'[data-testid="resume-link-{slug}"]')
+    assert link.is_displayed()</pre>
+        <p class="annotation">A pytest plugin: <code>scenarios(...)</code> auto-generates a real pytest test per scenario. State (the <code>driver</code>) is an ordinary pytest fixture, same pattern as <code>selenium-python</code>. <code>parsers.parse(...)</code> captures the quoted value as a plain function argument.</p>
+      </div>
+
+      <div class="tab-panel" data-panel="behave">
+        <h4>bdd-behave/features/steps/resume_steps.py</h4>
+        <pre>@then('I should see a link for "{slug}"')
+def see_link_for(context, slug):
+    link = _wait_visible(context.driver, f'[data-testid="resume-link-{slug}"]')
+    assert link.is_displayed()</pre>
+        <p class="annotation">Its own standalone runner (<code>behave</code>, not <code>pytest</code>). No fixture injection — shared state lives on one <code>context</code> object, set up in <code>features/environment.py</code>'s <code>before_scenario</code>/<code>after_scenario</code> hooks instead.</p>
+      </div>
+
+      <div class="tab-panel" data-panel="cucumber">
+        <h4>bdd-cucumber-js/features/step_definitions/resume.steps.js</h4>
+        <pre>Then("I should see a link for {string}", async function (slug) {
+  const visible = await this.page.getByTestId(`resume-link-${slug}`).isVisible();
+  assert.ok(visible);
+});</pre>
+        <p class="annotation">The JS-ecosystem BDD tool, paired here with Playwright rather than Selenium — so downloads use <code>waitForEvent("download")</code> directly, no CDP workaround needed. State lives on <code>this</code> inside each step, set up in <code>Before</code>/<code>After</code> hooks.</p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-undefined">
+    <h2 id="h-undefined"><span class="num">03</span> What happens when the wording drifts</h2>
+    <p class="lede">The single most instructive BDD-specific failure: change a Gherkin step's wording without updating its step definition. All three tools catch it — none of them recover the same way.</p>
+    <div class="callout">
+      <p><b>Verified</b> across all three, by actually changing <code>"I should see a link for"</code> to <code>"I should see a resume link for"</code> in each stack's feature file and rerunning:</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Tool</th><th>What it calls this</th><th>What it does about it</th></tr></thead>
+        <tbody>
+          <tr><td>pytest-bdd</td><td><code>StepDefinitionNotFoundError</code></td><td>Fails immediately, names the exact missing step text and line number. No suggestion offered.</td></tr>
+          <tr><td>Behave</td><td>"undefined"</td><td>Runs everything else, marks that one scenario undefined, and prints a ready-to-paste <code>@then</code> stub in Behave's decorator style.</td></tr>
+          <tr><td>Cucumber.js</td><td>"undefined"</td><td>Same idea as Behave — runs everything else, then prints a stub using <code>{string}</code> expression syntax and a <code>return 'pending'</code> placeholder.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-graduate">
+    <h2 id="h-graduate"><span class="num">04</span> Run all three for real</h2>
+    <pre class="cmd">cd learning-lab/bdd-pytest-bdd  &amp;&amp; ./setup.sh &amp;&amp; ./run.sh
+cd learning-lab/bdd-behave      &amp;&amp; ./setup.sh &amp;&amp; ./run.sh
+cd learning-lab/bdd-cucumber-js &amp;&amp; ./setup.sh &amp;&amp; ./run.sh</pre>
+      <pre class="output">pytest-bdd:   5 passed in 3.18s
+Behave:       5 scenarios passed, 0 failed, 0 skipped
+Cucumber.js:  5 scenarios (5 passed), 20 steps (20 passed)</pre>
+  </section>
+
+  <section aria-labelledby="h-try">
+    <h2 id="h-try"><span class="num">05</span> Try it yourself</h2>
+    <ul class="practice">
+      <li><span class="stack-tag">pytest-bdd</span> In <code>features/resume.feature</code>, reword one step without touching <code>test_resume.py</code>. Rerun — that one scenario fails with <code>StepDefinitionNotFoundError</code>, the rest still pass.</li>
+      <li><span class="stack-tag">Behave</span> Same edit in its own <code>features/resume.feature</code>. Rerun — 4 pass, 1 reports "undefined" with a generated step stub.</li>
+      <li><span class="stack-tag">Cucumber.js</span> Same edit again. Rerun — 4 scenarios pass, 1 undefined, with Cucumber's own stub format.</li>
+    </ul>
+    <p class="lede" style="margin-top: 14px;">Undo each change and confirm you're back to 5/5 before moving on. Full exercise detail is in each stack's own README.</p>
+  </section>
+
+  <div class="nav-footer">
+    <a href="cypress-js.html">&larr; Back: Cypress</a>
+    <a href="load-locust.html">Next: learn Locust &rarr;</a>
+  </div>
+
+  <footer class="page-footer">learning-lab · docs/bdd.html · every command and output above was actually run, across all three tools.</footer>
+
+</div>
+
+<script>
+(function () {
+  document.querySelectorAll(".tab-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var target = btn.dataset.tab;
+      document.querySelectorAll(".tab-btn").forEach(function (b) { b.setAttribute("aria-selected", "false"); });
+      btn.setAttribute("aria-selected", "true");
+      document.querySelectorAll(".tab-panel").forEach(function (p) {
+        p.classList.toggle("is-active", p.dataset.panel === target);
+      });
+    });
+  });
+})();
+</script>

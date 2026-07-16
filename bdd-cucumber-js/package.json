@@ -1,0 +1,11 @@
+{
+  "name": "bdd-cucumber-js",
+  "private": true,
+  "scripts": {
+    "test": "cucumber-js"
+  },
+  "dependencies": {
+    "@cucumber/cucumber": "13.1.1",
+    "playwright": "1.61.1"
+  }
+}

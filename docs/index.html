@@ -99,7 +99,7 @@
   <header class="masthead">
     <p class="eyebrow">learning-lab · the learning hub</p>
     <h1>Learn to test resume-app, one framework at a time</h1>
-    <p class="dek">Five tutorials, each teaching a framework from zero by building real tests against a real running app — not a finished suite to read, a suite you build yourself, one concept at a time. New to resume-app itself? Start with <a href="https://claude.ai/code/artifact/fe709245-d732-498e-88a9-68a6472922f5">its architecture guide</a> first.</p>
+    <p class="dek">Six tutorials, each teaching a framework from zero by building real tests against a real running app — not a finished suite to read, a suite you build yourself, one concept at a time. New to resume-app itself? Start with <a href="https://claude.ai/code/artifact/fe709245-d732-498e-88a9-68a6472922f5">its architecture guide</a> first.</p>
   </header>
 
   <section aria-labelledby="h-pick">
@@ -130,8 +130,14 @@
         <p>Runs inside the browser rather than driving it from outside. Commands auto-retry by default, and downloads just work, with zero of the config Selenium needed.</p>
         <div class="tags"><span class="tag">JavaScript</span><span class="tag">Cypress</span><span class="tag">Electron</span></div>
       </a>
+      <a class="tut-card" href="bdd.html">
+        <span class="num">05 · bdd</span>
+        <h3>Learn BDD — the same 5 scenarios, three tools</h3>
+        <p>Gherkin feature files wired up with pytest-bdd, Behave, and Cucumber.js. Same coverage each time; a verified, three-way comparison of how each tool fails when the wording drifts.</p>
+        <div class="tags"><span class="tag">pytest-bdd</span><span class="tag">Behave</span><span class="tag">Cucumber.js</span></div>
+      </a>
       <a class="tut-card" href="load-locust.html">
-        <span class="num">05 · load-locust</span>
+        <span class="num">06 · load-locust</span>
         <h3>Learn Locust — does it hold up under load?</h3>
         <p>Simulate concurrent users, learn why percentiles matter, then reproduce a real finding: 0% failures, but a multi-second latency tail once a backend replica goes down.</p>
         <div class="tags"><span class="tag">Python</span><span class="tag">Locust</span></div>
@@ -140,8 +146,8 @@
   </section>
 
   <section aria-labelledby="h-why">
-    <h2 id="h-why">Three questions, five tutorials</h2>
-    <p class="lede">Confusing which question a test answers is the most common mistake in test automation. Three of the five tutorials deliberately answer the <em>same</em> question with different tools — that's not redundant, it's the fastest way to see what each tool's design actually costs and buys you.</p>
+    <h2 id="h-why">Three questions, six tutorials</h2>
+    <p class="lede">Confusing which question a test answers is the most common mistake in test automation. Three of the six tutorials deliberately answer the <em>same</em> question with different tools — that's not redundant, it's the fastest way to see what each tool's design actually costs and buys you. BDD is a different axis entirely: not a new question, but a different way of <em>writing down</em> the UI question's answer, on top of tools already covered.</p>
     <div class="table-wrap">
       <table>
         <thead><tr><th>Question</th><th>Tutorial</th></tr></thead>
@@ -150,6 +156,7 @@
           <tr><td rowspan="3"><b>Does it work the way a user experiences it?</b> — real clicks in a real browser</td><td><a href="ui-playwright.html">ui-playwright</a> — auto-waiting, built-in download events</td></tr>
           <tr><td><a href="selenium-python.html">selenium-python</a> — explicit waits, manual download handling</td></tr>
           <tr><td><a href="cypress-js.html">cypress-js</a> — runs in-browser, auto-retrying, downloads work out of the box</td></tr>
+          <tr><td><b>...described in a form a non-programmer can read?</b> — same scenarios, Gherkin instead of raw test code</td><td><a href="bdd.html">bdd</a> — pytest-bdd, Behave, and Cucumber.js, compared</td></tr>
           <tr><td><b>Does it still work well under load?</b> — throughput and latency with many requests at once</td><td><a href="load-locust.html">load-locust</a></td></tr>
         </tbody>
       </table>
@@ -161,13 +168,16 @@
 
   <section aria-labelledby="h-setup">
     <h2 id="h-setup">Setup, quick reference</h2>
-    <p class="lede">All five need resume-app running first.</p>
+    <p class="lede">All need resume-app running first.</p>
     <pre>cd resume-app &amp;&amp; scripts/start.sh   <span class="c"># http://localhost:8080</span>
 
 cd learning-lab/api-pytest      &amp;&amp; ./setup.sh &amp;&amp; ./run.sh
 cd learning-lab/ui-playwright   &amp;&amp; ./setup.sh &amp;&amp; ./run.sh
 cd learning-lab/selenium-python &amp;&amp; ./setup.sh &amp;&amp; ./run.sh
 cd learning-lab/cypress-js      &amp;&amp; ./setup.sh &amp;&amp; ./run.sh
+cd learning-lab/bdd-pytest-bdd  &amp;&amp; ./setup.sh &amp;&amp; ./run.sh
+cd learning-lab/bdd-behave      &amp;&amp; ./setup.sh &amp;&amp; ./run.sh
+cd learning-lab/bdd-cucumber-js &amp;&amp; ./setup.sh &amp;&amp; ./run.sh
 cd learning-lab/load-locust     &amp;&amp; ./setup.sh &amp;&amp; ./run.sh</pre>
     <p class="lede" style="margin-top: 14px;">Each stack's own README has full setup/run detail and its own "try breaking this on purpose" exercises for after the tutorial.</p>
   </section>
@@ -182,6 +192,9 @@ cd learning-lab/load-locust     &amp;&amp; ./setup.sh &amp;&amp; ./run.sh</pre>
           <tr><td><code>ui-playwright</code> — browser suite</td><td><span class="status-pill done">done, 7/7</span></td></tr>
           <tr><td><code>selenium-python</code> — browser suite, comparison tool</td><td><span class="status-pill done">done, 7/7</span></td></tr>
           <tr><td><code>cypress-js</code> — browser suite, comparison tool</td><td><span class="status-pill done">done, 7/7</span></td></tr>
+          <tr><td><code>bdd-pytest-bdd</code> — Gherkin + pytest-bdd</td><td><span class="status-pill done">done, 5/5</span></td></tr>
+          <tr><td><code>bdd-behave</code> — Gherkin + Behave</td><td><span class="status-pill done">done, 5/5</span></td></tr>
+          <tr><td><code>bdd-cucumber-js</code> — Gherkin + Cucumber.js</td><td><span class="status-pill done">done, 5/5</span></td></tr>
           <tr><td><code>load-locust</code> — load/performance suite</td><td><span class="status-pill done">done</span></td></tr>
         </tbody>
       </table>

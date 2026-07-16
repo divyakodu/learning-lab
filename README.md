@@ -42,6 +42,9 @@ if you're pointing at something else.
 | [ui-playwright](ui-playwright/) | Playwright (TS) | Browser-driven UI flows using the frontend's `data-testid` hooks, incl. real PDF/DOCX download verification | Done |
 | [selenium-python](selenium-python/) | Selenium (Python) | Same UI coverage as ui-playwright, for direct comparison -- explicit waits, manual download handling | Done |
 | [cypress-js](cypress-js/) | Cypress (JS) | Same UI coverage again -- runs in-browser rather than driving it externally, auto-retrying assertions, downloads work with zero config | Done |
+| [bdd-pytest-bdd](bdd-pytest-bdd/) | pytest-bdd + Selenium | Same 5 scenarios as a Gherkin feature file, pytest-plugin step wiring | Done |
+| [bdd-behave](bdd-behave/) | Behave + Selenium | Same Gherkin scenarios, Behave's standalone runner and `context` object instead | Done |
+| [bdd-cucumber-js](bdd-cucumber-js/) | Cucumber.js + Playwright | Same Gherkin scenarios again, JS ecosystem, Playwright driving the browser | Done |
 | [load-locust](load-locust/) | Locust | Load/performance: throughput and response-time percentiles under concurrent load, not just pass/fail | Done |
 
 More stacks may be added the same way — copy the shape above.
