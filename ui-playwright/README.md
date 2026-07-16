@@ -47,3 +47,24 @@ RESUME_APP_URL=https://example.com ./run.sh
 ```
 7 passed (3.7s)
 ```
+
+## Try breaking this on purpose
+
+Verified, safe, and fully reversible -- make the change, rerun `./run.sh`,
+read the failure, then undo it:
+
+- In `../../resume-app/frontend/html-js/js/app.js`, change
+  `` `resume-link-${r.slug}` `` to `` `link-${r.slug}` `` in `loadList()`.
+  No rebuild needed -- nginx serves that file live from disk, just
+  refresh. `resume list renders at least one entry` fails with a 5-second
+  timeout: Playwright can't find `getByTestId("resume-link-divya-kodukula")`
+  anymore, because the test looks up elements by `data-testid`, not by
+  guessing at markup. This is exactly why the frontend carries those
+  attributes in the first place.
+- In the same file's `loadDetail()`, delete the line
+  `document.getElementById("pdf-link").href = ...`. The download tests
+  fail -- clicking the button no longer has anywhere to point, so no
+  download event ever fires.
+
+Undo each change and rerun `./run.sh` to confirm you're back to 7/7 before
+moving on.

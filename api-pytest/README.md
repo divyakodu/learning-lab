@@ -49,3 +49,28 @@ RESUME_APP_URL=https://example.com ./run.sh
 ```
 10 passed in 0.25s
 ```
+
+## Try breaking this on purpose
+
+The fastest way to understand what a test actually checks is to make it
+fail on purpose, read why, then undo the change. These are all verified,
+safe, and fully reversible:
+
+- Comment out `pydyf==0.10.0` in
+  `../../resume-app/backend/python-fastapi/requirements.txt`, then
+  `docker compose build --no-cache backend1 backend2 && docker compose up -d`
+  in `resume-app`. `test_pdf_download` fails -- the PDF endpoint 500s. This
+  is the real bug documented in `resume-app/docs/architecture.html`'s fix
+  log; the pin is the fix.
+- Comment out `add_header X-Served-By $upstream_addr always;` in
+  `../../resume-app/nginx/nginx.conf`, then
+  `docker compose restart nginx`. `test_served_by_header_present` fails --
+  the header just isn't there anymore.
+- Comment out `server backend2:8000;` in the `upstream backend_api` block
+  of the same `nginx.conf`, then `docker compose restart nginx`.
+  `test_health_round_robins_across_both_backends` fails -- every request
+  now lands on `backend1`, so the set of instances seen is `{"backend1"}`
+  instead of both.
+
+Undo each change and rerun `./run.sh` to confirm you're back to 10/10
+before moving on.
