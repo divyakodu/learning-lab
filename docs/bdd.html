@@ -188,8 +188,24 @@ def see_link_for(context, slug):
     </div>
   </section>
 
+  <section aria-labelledby="h-syntax">
+    <h2 id="h-syntax"><span class="num">04</span> Syntax rules that actually bite beginners</h2>
+    <p class="lede">Two more mistakes, verified live and worth seeing before you hit them for real — because they don't fail the same way, and one of them is genuinely misleading.</p>
+    <div class="prose">
+      <div class="concept">
+        <span class="label">verified — case sensitivity, and it's sneaky</span>
+        <p>Gherkin keywords (<code>Given</code>, <code>When</code>, <code>Then</code>, <code>And</code>, <code>But</code>) are case-sensitive, but <b>not</b> in the way you'd expect. Lowercasing one — <code>when I open the resume list</code> instead of <code>When I open the resume list</code> — does <em>not</em> raise a parse error. The file still "collects" fine. But the step silently fails to match against its <code>@when</code>-registered function, so the browser never actually navigates anywhere — and the failure you see is a <b>timeout on the next step</b> (waiting 5 seconds for an element that was never going to appear, since the page never loaded), not a clear error pointing at the real cause. Verified: capitalized, the test passes in 0.7s; lowercased, it fails after a 6-second timeout, every time.</p>
+      </div>
+      <div class="concept">
+        <span class="label">verified — quotes are structural, not decorative</span>
+        <p>Drop the quotes — <code>Then I should see a link for divya-kodukula</code> instead of <code>for "divya-kodukula"</code> — and you get the opposite experience: an immediate, clear <code>StepDefinitionNotFoundError</code> naming the exact unmatched text. The quotes aren't stylistic; they're what tells the parser "this part is a parameter," matching the <code>"{slug}"</code> placeholder in the step definition. No quotes, no parameter, no match — but at least it tells you so right away.</p>
+      </div>
+      <p>The pattern worth internalizing: some Gherkin mistakes fail loud and immediately (missing quotes, misspelled step text — see §03 above); others fail quiet and late (wrong keyword case). When a BDD test times out for no obvious reason, checking the exact keyword casing on the step above the one that failed is worth doing before assuming the application is broken.</p>
+    </div>
+  </section>
+
   <section aria-labelledby="h-graduate">
-    <h2 id="h-graduate"><span class="num">04</span> Run all three for real</h2>
+    <h2 id="h-graduate"><span class="num">05</span> Run all three for real</h2>
     <pre class="cmd">cd learning-lab/bdd-pytest-bdd  &amp;&amp; ./setup.sh &amp;&amp; ./run.sh
 cd learning-lab/bdd-behave      &amp;&amp; ./setup.sh &amp;&amp; ./run.sh
 cd learning-lab/bdd-cucumber-js &amp;&amp; ./setup.sh &amp;&amp; ./run.sh</pre>
@@ -199,11 +215,13 @@ Cucumber.js:  5 scenarios (5 passed), 20 steps (20 passed)</pre>
   </section>
 
   <section aria-labelledby="h-try">
-    <h2 id="h-try"><span class="num">05</span> Try it yourself</h2>
+    <h2 id="h-try"><span class="num">06</span> Try it yourself</h2>
     <ul class="practice">
       <li><span class="stack-tag">pytest-bdd</span> In <code>features/resume.feature</code>, reword one step without touching <code>test_resume.py</code>. Rerun — that one scenario fails with <code>StepDefinitionNotFoundError</code>, the rest still pass.</li>
       <li><span class="stack-tag">Behave</span> Same edit in its own <code>features/resume.feature</code>. Rerun — 4 pass, 1 reports "undefined" with a generated step stub.</li>
       <li><span class="stack-tag">Cucumber.js</span> Same edit again. Rerun — 4 scenarios pass, 1 undefined, with Cucumber's own stub format.</li>
+      <li><span class="stack-tag">pytest-bdd</span> In <code>bdd-pytest-bdd/features/resume.feature</code>, lowercase just the <code>When</code> on the first scenario's first line to <code>when</code>. Rerun — it still collects fine, but that scenario fails after a ~6s timeout instead of pytest-bdd's usual instant, clear error.</li>
+      <li><span class="stack-tag">pytest-bdd</span> In the same file, remove the quotes around <code>"divya-kodukula"</code> in a <code>Then</code> step. Rerun — immediate <code>StepDefinitionNotFoundError</code>, naming the exact unquoted text.</li>
     </ul>
     <p class="lede" style="margin-top: 14px;">Undo each change and confirm you're back to 5/5 before moving on. Full exercise detail is in each stack's own README.</p>
   </section>
