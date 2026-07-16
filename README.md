@@ -5,6 +5,12 @@ across multiple frameworks. Each subfolder is a self-contained test stack
 against the same running app — same assertions in spirit, different tooling,
 so the frameworks can be compared directly.
 
+**New to one of these frameworks?** [`docs/index.html`](docs/index.html) is
+a learning hub with a step-by-step, build-along tutorial for each stack —
+you write the tests yourself, from an empty file, ending at the real suite
+in this repo. Each stack's own README below is the reference copy (what's
+tested, setup, run); the tutorials are how you'd actually learn the tool.
+
 Every stack follows the same shape:
 
 ```

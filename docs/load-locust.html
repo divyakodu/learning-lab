@@ -1,0 +1,271 @@
+<!doctype html>
+<title>Learn Locust by load-testing resume-app</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #eef0f0; --surface: #ffffff; --surface-2: #e3e8ea;
+    --ink: #1b2430; --ink-soft: #56636f; --line: #c7d0d4;
+    --accent: #2b5d8c; --accent-soft: #dce7f0;
+    --success: #3f7d58; --success-soft: #dfeee5;
+    --warn: #b5651d; --warn-soft: #f3e3d2;
+    --font-display: Iowan Old Style, "Palatino Linotype", Palatino, Georgia, serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10161d; --surface: #182029; --surface-2: #1f2833;
+      --ink: #dde3e8; --ink-soft: #93a2ac; --line: #2b3743;
+      --accent: #6ba8da; --accent-soft: #1c2c3a;
+      --success: #6fbe8c; --success-soft: #17281f;
+      --warn: #d9a15b; --warn-soft: #2b2013;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10161d; --surface: #182029; --surface-2: #1f2833;
+    --ink: #dde3e8; --ink-soft: #93a2ac; --line: #2b3743;
+    --accent: #6ba8da; --accent-soft: #1c2c3a;
+    --success: #6fbe8c; --success-soft: #17281f;
+    --warn: #d9a15b; --warn-soft: #2b2013;
+  }
+  :root[data-theme="light"] {
+    --bg: #eef0f0; --surface: #ffffff; --surface-2: #e3e8ea;
+    --ink: #1b2430; --ink-soft: #56636f; --line: #c7d0d4;
+    --accent: #2b5d8c; --accent-soft: #dce7f0;
+    --success: #3f7d58; --success-soft: #dfeee5;
+    --warn: #b5651d; --warn-soft: #f3e3d2;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--font-body); font-size: 16px; line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { max-width: 760px; margin: 0 auto; padding: clamp(28px, 5vw, 64px) clamp(18px, 4vw, 28px) 80px; }
+  a { color: var(--accent); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  p { max-width: 68ch; }
+
+  .breadcrumb { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--ink-soft); margin: 0 0 18px; }
+  header.masthead { border-bottom: 1px solid var(--line); padding-bottom: 22px; margin-bottom: 44px; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--ink-soft); margin: 0 0 8px;
+  }
+  h1 {
+    font-family: var(--font-display); font-size: clamp(1.7rem, 1.3rem + 1.6vw, 2.3rem);
+    font-weight: 600; margin: 0 0 10px; text-wrap: balance;
+  }
+  .dek { font-size: 1.0625rem; color: var(--ink-soft); max-width: 62ch; margin: 0 0 4px; }
+  .meta { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--ink-soft); margin-top: 14px; }
+
+  .step { display: grid; grid-template-columns: 34px 1fr; gap: 16px; margin-bottom: 40px; }
+  .step-num {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--accent-soft); color: var(--accent);
+    display: flex; align-items: center; justify-content: center; font-family: var(--font-mono);
+    font-size: 0.9375rem; font-weight: 600; flex-shrink: 0;
+  }
+  .step-body h2 { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; margin: 4px 0 10px; }
+  .step-body > p { margin: 0 0 12px; color: var(--ink-soft); }
+  .step-body > p:last-child { margin-bottom: 0; }
+
+  .concept {
+    background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0; padding: 12px 16px; margin: 12px 0; font-size: 0.9375rem;
+  }
+  .concept p { margin: 0; max-width: none; }
+  .concept .label { font-family: var(--font-mono); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); display: block; margin-bottom: 4px; }
+
+  .callout {
+    background: var(--warn-soft); border: 1px solid var(--warn); border-radius: 6px;
+    padding: 12px 16px; font-size: 0.9375rem; margin: 12px 0;
+  }
+  .callout p { margin: 0; max-width: none; }
+  .callout.finding { background: var(--warn-soft); border-color: var(--warn); }
+
+  pre {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px;
+    overflow-x: auto; font-family: var(--font-mono); font-size: 0.8125rem; line-height: 1.55; margin: 10px 0;
+  }
+  pre.cmd { border-left: 3px solid var(--ink-soft); }
+  pre.cmd::before { content: "$ "; color: var(--ink-soft); }
+  pre.output { background: var(--surface-2); color: var(--ink-soft); }
+  pre .c { color: var(--ink-soft); }
+
+  .file-label { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-soft); margin: 14px 0 -4px; display: block; }
+
+  .table-wrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.875rem; margin: 10px 0; }
+  th, td { text-align: left; padding: 7px 12px; border-bottom: 1px solid var(--line); }
+  th { font-family: var(--font-mono); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+  td { font-variant-numeric: tabular-nums; }
+
+  .nav-footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; border-top: 1px solid var(--line); padding-top: 20px; margin-top: 8px; font-size: 0.9375rem; }
+  footer.page-footer { border-top: 1px solid var(--line); padding-top: 18px; color: var(--ink-soft); font-size: 0.8125rem; margin-top: 40px; }
+</style>
+
+<div class="page">
+
+  <p class="breadcrumb"><a href="index.html">learning-lab</a> / load-locust tutorial</p>
+
+  <header class="masthead">
+    <p class="eyebrow">tutorial · build along</p>
+    <h1>Learn Locust by load-testing resume-app</h1>
+    <p class="dek">A third, genuinely different kind of testing. The pytest and Playwright tutorials both ask "is this correct?" This one asks "does it hold up when many things happen at once?" — a question correctness tests structurally can't answer, no matter how many of them you write.</p>
+    <p class="meta">~15 minutes · needs resume-app running (both replicas) and Python 3</p>
+  </header>
+
+  <div class="step">
+    <div class="step-num">0</div>
+    <div class="step-body">
+      <h2>Before you start</h2>
+      <pre class="cmd">cd resume-app
+scripts/start.sh</pre>
+      <pre class="cmd">mkdir locust-tutorial &amp;&amp; cd locust-tutorial
+python3 -m venv .venv
+.venv/bin/pip install locust</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <h2>The smallest possible load test</h2>
+      <div class="concept">
+        <span class="label">concept</span>
+        <p>A Locust file defines a <code>User</code> class — a template for one simulated visitor. Each <code>@task</code> is something that user does. Locust spawns however many copies of it you ask for and runs them concurrently, then reports on what happened across all of them.</p>
+      </div>
+      <span class="file-label">locustfile.py</span>
+      <pre>from locust import HttpUser, task
+
+class ResumeAppUser(HttpUser):
+    @task
+    def health(self):
+        self.client.get("/api/health")</pre>
+      <pre class="cmd">.venv/bin/locust -f locustfile.py --headless --users 1 --spawn-rate 1 --run-time 5s --host http://localhost:8080</pre>
+      <pre class="output">Type     Name                #reqs   #fails |  Avg  Min  Max  Med | req/s  fail/s
+GET      /api/health          1668  0(0.00%) |    2    1   15    2 | 477.16    0.00</pre>
+      <div class="callout">
+        <p><b>One simulated user just fired 1,668 requests in 5 seconds.</b> That's not realistic — a real person clicks, reads, then clicks again. Nothing in the code above told Locust to pause, so it hammered the endpoint as fast as the network would allow.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <h2>Make it behave like real users</h2>
+      <p>Add <code>wait_time</code> — a pause, randomized between two bounds, that Locust inserts after every task:</p>
+      <span class="file-label">locustfile.py</span>
+      <pre>from locust import HttpUser, between, task
+
+class ResumeAppUser(HttpUser):
+    wait_time = between(0.5, 2)
+
+    @task
+    def health(self):
+        self.client.get("/api/health")</pre>
+      <pre class="cmd">.venv/bin/locust -f locustfile.py --headless --users 5 --spawn-rate 5 --run-time 8s --host http://localhost:8080</pre>
+      <pre class="output">Type     Name                #reqs   #fails |  Avg  Min  Max  Med | req/s  fail/s
+GET      /api/health            32  0(0.00%) |    5    3   10    5 |   4.09    0.00</pre>
+      <p>32 requests from 5 users over 8 seconds — a far more realistic rate. This is the number to tune deliberately, not accept by accident: it's the difference between "simulating traffic" and "simulating a denial-of-service attack against your own app."</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <h2>Simulate a realistic mix of behavior</h2>
+      <div class="concept">
+        <span class="label">concept</span>
+        <p><code>@task(10)</code> vs <code>@task(2)</code> sets relative frequency — this user is roughly 5x more likely to browse the list than download a PDF, matching how people actually use the app.</p>
+      </div>
+      <span class="file-label">locustfile.py</span>
+      <pre>from locust import HttpUser, between, task
+
+SLUG = "divya-kodukula"
+
+class ResumeAppUser(HttpUser):
+    wait_time = between(0.5, 2)
+
+    @task(10)
+    def view_list(self):
+        self.client.get("/api/resumes", name="/api/resumes")
+
+    @task(2)
+    def download_pdf(self):
+        self.client.get(f"/api/resumes/{SLUG}/pdf", name="/api/resumes/[slug]/pdf")</pre>
+      <pre class="cmd">.venv/bin/locust -f locustfile.py --headless --users 10 --spawn-rate 5 --run-time 10s --host http://localhost:8080</pre>
+      <pre class="output">Type     Name                              #reqs   #fails |  Avg  Min  Max  Med | req/s
+GET      /api/resumes                         66  0(0.00%) |    5    1   11    5 |  6.7
+GET      /api/resumes/[slug]/pdf               9  0(0.00%) |  143   94  234  120 |  0.9</pre>
+      <p>Roughly the 5:1 ratio the weights implied, and the PDF endpoint is consistently ~25x slower than the list — expected, since it does real rendering work (<code>weasyprint</code>) instead of serving JSON.</p>
+      <div class="concept">
+        <span class="label">why percentiles, not just the average</span>
+        <p>"Avg" hides outliers — one request that took 3 seconds and nine that took 5ms still average out to a number that looks fine. A <b>percentile</b> answers a sharper question: p90 is the response time that 90% of requests were <em>at or under</em> — so "p90 = 130ms" means one in ten requests was slower than that. That's the number that catches problems an average would hide, as the next step shows.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <h2>Graduate to the real suite</h2>
+      <p>The real <a href="https://github.com/divyakodu/learning-lab/tree/main/load-locust"><code>load-locust</code></a> stack extends this with all five endpoints and a headless run script. Run it against a fully healthy resume-app (both replicas up):</p>
+      <pre class="cmd">cd learning-lab/load-locust
+./setup.sh
+./run.sh</pre>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Endpoint</th><th>req/s</th><th>p50</th><th>p90</th><th>p99</th></tr></thead>
+          <tbody>
+            <tr><td><code>/api/resumes</code></td><td>7.0</td><td>4ms</td><td>6ms</td><td>31ms</td></tr>
+            <tr><td><code>/api/resumes/[slug]</code></td><td>5.1</td><td>5ms</td><td>6ms</td><td>31ms</td></tr>
+            <tr><td><code>/api/resumes/[slug]/pdf</code></td><td>1.4</td><td>120ms</td><td>140ms</td><td>190ms</td></tr>
+            <tr><td><code>/api/resumes/[slug]/docx</code></td><td>0.7</td><td>46ms</td><td>54ms</td><td>54ms</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>20 users, 30 seconds, 414 requests, <b>0 failures</b>. Healthy baseline, worth remembering for the next step.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-body">
+      <h2>The finding this whole tutorial builds to</h2>
+      <p>Stop one of the two backend replicas — the same infrastructure the load balancer is meant to protect against:</p>
+      <pre class="cmd">cd resume-app
+docker compose stop backend2</pre>
+      <p>Now rerun the load test:</p>
+      <pre class="cmd">cd learning-lab/load-locust
+./run.sh</pre>
+      <div class="callout finding">
+        <p><b>Verified result:</b> the failure rate stayed at <b>0%</b> in every run — nginx silently retries any request that hits the dead <code>backend2</code> onto <code>backend1</code>. But a real, multi-second tail appeared: across several runs, somewhere in the top 1-10% of requests (the exact percentile shifted run to run) spiked to <b>2-3+ seconds</b>, against a healthy median in the single-digit milliseconds. One run's p90 alone hit <b>7.6 seconds</b>.</p>
+      </div>
+      <p>Every request still technically "worked." A functional test suite — <code>api-pytest</code>, or the tutorial before this one — would show all green in this exact state. Only measuring response times under concurrent load reveals that the app is, in practice, in real trouble. That gap is the entire reason load testing exists as its own discipline rather than "more functional tests, run faster."</p>
+      <p>Restore it and confirm recovery:</p>
+      <pre class="cmd">cd resume-app
+docker compose start backend2</pre>
+      <pre class="output">$ ./run.sh
+<span class="c"># p90 back down to double-digit milliseconds, 0 failures</span></pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">6</div>
+    <div class="step-body">
+      <h2>Keep experimenting</h2>
+      <p>A few directions worth trying on your own, now that the mechanics make sense: raise <code>--users</code> until you find the point where failures start appearing, not just latency; watch what happens if you stop <em>both</em> replicas; or add a <code>@task</code> for <code>/api/resumes/{slug}/regenerate</code> and see how a <code>POST</code> under load compares to a <code>GET</code>.</p>
+    </div>
+  </div>
+
+  <div class="nav-footer">
+    <a href="ui-playwright.html">&larr; Back: Playwright</a>
+    <a href="index.html">Back to learning-lab &rarr;</a>
+  </div>
+
+  <footer class="page-footer">learning-lab · docs/load-locust.html · every command and number above came from an actual run against the real app.</footer>
+
+</div>

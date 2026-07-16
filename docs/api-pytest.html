@@ -1,0 +1,337 @@
+<!doctype html>
+<title>Learn pytest by testing resume-app</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #eef0f0; --surface: #ffffff; --surface-2: #e3e8ea;
+    --ink: #1b2430; --ink-soft: #56636f; --line: #c7d0d4;
+    --accent: #2b5d8c; --accent-soft: #dce7f0;
+    --success: #3f7d58; --success-soft: #dfeee5;
+    --warn: #b5651d; --warn-soft: #f3e3d2;
+    --font-display: Iowan Old Style, "Palatino Linotype", Palatino, Georgia, serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10161d; --surface: #182029; --surface-2: #1f2833;
+      --ink: #dde3e8; --ink-soft: #93a2ac; --line: #2b3743;
+      --accent: #6ba8da; --accent-soft: #1c2c3a;
+      --success: #6fbe8c; --success-soft: #17281f;
+      --warn: #d9a15b; --warn-soft: #2b2013;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10161d; --surface: #182029; --surface-2: #1f2833;
+    --ink: #dde3e8; --ink-soft: #93a2ac; --line: #2b3743;
+    --accent: #6ba8da; --accent-soft: #1c2c3a;
+    --success: #6fbe8c; --success-soft: #17281f;
+    --warn: #d9a15b; --warn-soft: #2b2013;
+  }
+  :root[data-theme="light"] {
+    --bg: #eef0f0; --surface: #ffffff; --surface-2: #e3e8ea;
+    --ink: #1b2430; --ink-soft: #56636f; --line: #c7d0d4;
+    --accent: #2b5d8c; --accent-soft: #dce7f0;
+    --success: #3f7d58; --success-soft: #dfeee5;
+    --warn: #b5651d; --warn-soft: #f3e3d2;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--font-body); font-size: 16px; line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { max-width: 760px; margin: 0 auto; padding: clamp(28px, 5vw, 64px) clamp(18px, 4vw, 28px) 80px; }
+  a { color: var(--accent); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  p { max-width: 68ch; }
+
+  .breadcrumb { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--ink-soft); margin: 0 0 18px; }
+  header.masthead { border-bottom: 1px solid var(--line); padding-bottom: 22px; margin-bottom: 44px; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--ink-soft); margin: 0 0 8px;
+  }
+  h1 {
+    font-family: var(--font-display); font-size: clamp(1.7rem, 1.3rem + 1.6vw, 2.3rem);
+    font-weight: 600; margin: 0 0 10px; text-wrap: balance;
+  }
+  .dek { font-size: 1.0625rem; color: var(--ink-soft); max-width: 62ch; margin: 0 0 4px; }
+  .meta { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--ink-soft); margin-top: 14px; }
+
+  /* ---------- steps ---------- */
+  .step { display: grid; grid-template-columns: 34px 1fr; gap: 16px; margin-bottom: 40px; }
+  .step-num {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--accent-soft); color: var(--accent);
+    display: flex; align-items: center; justify-content: center; font-family: var(--font-mono);
+    font-size: 0.9375rem; font-weight: 600; flex-shrink: 0;
+  }
+  .step-body h2 { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; margin: 4px 0 10px; }
+  .step-body > p { margin: 0 0 12px; color: var(--ink-soft); }
+  .step-body > p:last-child { margin-bottom: 0; }
+
+  .concept {
+    background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0; padding: 12px 16px; margin: 12px 0; font-size: 0.9375rem;
+  }
+  .concept p { margin: 0; max-width: none; }
+  .concept .label { font-family: var(--font-mono); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); display: block; margin-bottom: 4px; }
+
+  .callout {
+    background: var(--warn-soft); border: 1px solid var(--warn); border-radius: 6px;
+    padding: 12px 16px; font-size: 0.9375rem; margin: 12px 0;
+  }
+  .callout p { margin: 0; max-width: none; }
+
+  pre {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px;
+    overflow-x: auto; font-family: var(--font-mono); font-size: 0.8125rem; line-height: 1.55; margin: 10px 0;
+  }
+  pre.cmd { border-left: 3px solid var(--ink-soft); }
+  pre.cmd::before { content: "$ "; color: var(--ink-soft); }
+  pre.output { background: var(--surface-2); color: var(--ink-soft); }
+  pre.output .ok { color: var(--success); }
+  pre.output .fail { color: var(--warn); }
+  pre .c { color: var(--ink-soft); }
+
+  .file-label {
+    font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-soft);
+    margin: 14px 0 -4px; display: block;
+  }
+
+  .step hr.grow {
+    border: none; border-top: 1px solid var(--line); margin: 0 0 0 -50px; width: 1px; height: 100%;
+  }
+
+  /* ---------- practice list ---------- */
+  .practice { display: flex; flex-direction: column; gap: 10px; }
+  .practice li {
+    list-style: none; background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+    padding: 12px 16px; font-size: 0.9375rem;
+  }
+  .practice code { font-family: var(--font-mono); background: var(--surface-2); padding: 1px 6px; border-radius: 3px; font-size: 0.85em; }
+
+  .nav-footer {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    border-top: 1px solid var(--line); padding-top: 20px; margin-top: 8px; font-size: 0.9375rem;
+  }
+  footer.page-footer { border-top: 1px solid var(--line); padding-top: 18px; color: var(--ink-soft); font-size: 0.8125rem; margin-top: 40px; }
+</style>
+
+<div class="page">
+
+  <p class="breadcrumb"><a href="index.html">learning-lab</a> / api-pytest tutorial</p>
+
+  <header class="masthead">
+    <p class="eyebrow">tutorial · build along</p>
+    <h1>Learn pytest by testing resume-app's API</h1>
+    <p class="dek">No prior pytest knowledge assumed. You'll write a handful of tests from scratch against a real running app, one concept at a time, ending at the actual suite that lives in this repo.</p>
+    <p class="meta">~15 minutes · needs resume-app running and Python 3</p>
+  </header>
+
+  <div class="step">
+    <div class="step-num">0</div>
+    <div class="step-body">
+      <h2>Before you start</h2>
+      <p>Start resume-app in another terminal, and leave it running for the whole tutorial:</p>
+      <pre class="cmd">cd resume-app
+scripts/start.sh</pre>
+      <p>Then set up an isolated place to work — a <b>virtual environment</b> (venv) so the packages you install here don't affect anything else on your machine:</p>
+      <pre class="cmd">mkdir pytest-tutorial &amp;&amp; cd pytest-tutorial
+python3 -m venv .venv
+.venv/bin/pip install pytest requests</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <h2>What pytest actually does</h2>
+      <div class="concept">
+        <span class="label">concept</span>
+        <p>pytest looks for files named <code>test_*.py</code>, runs every function inside them named <code>test_*</code>, and treats each one as pass/fail based on whether its <code>assert</code> statements are true. That's the entire mental model — no special syntax, no test-class boilerplate required.</p>
+      </div>
+      <p>Create <code>test_smoke.py</code>:</p>
+      <span class="file-label">test_smoke.py</span>
+      <pre>def test_true():
+    assert True</pre>
+      <p>Run it:</p>
+      <pre class="cmd">.venv/bin/pytest -v</pre>
+      <pre class="output">test_smoke.py::test_true <span class="ok">PASSED</span>                                          [100%]
+
+1 passed in 0.00s</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <h2>Watch one fail, on purpose</h2>
+      <p>This is worth doing before writing anything real — you want to recognize this output the first time it happens for real, not the first time it's confusing. Change the file to:</p>
+      <span class="file-label">test_smoke.py</span>
+      <pre>def test_math():
+    assert 2 + 2 == 5</pre>
+      <pre class="cmd">.venv/bin/pytest -v</pre>
+      <pre class="output">test_smoke.py::test_math <span class="fail">FAILED</span>                                          [100%]
+
+=================================== FAILURES ===================================
+__________________________________ test_math ___________________________________
+
+    def test_math():
+&gt;       assert 2 + 2 == 5
+E       assert (2 + 2) == 5
+
+test_smoke.py:2: AssertionError
+1 failed in 0.01s</pre>
+      <p>pytest shows you the exact expression that failed, with the real computed value substituted in (<code>(2 + 2) == 5</code>) — you rarely need a debugger to figure out why a test failed; the failure output usually already tells you.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <h2>Test something real</h2>
+      <p>Replace the file with a test against resume-app's actual health endpoint, using the <code>requests</code> library to make a real HTTP call:</p>
+      <span class="file-label">test_smoke.py</span>
+      <pre>import requests
+
+def test_health():
+    resp = requests.get("http://localhost:8080/api/health")
+    assert resp.status_code == 200</pre>
+      <pre class="cmd">.venv/bin/pytest -v</pre>
+      <pre class="output">test_smoke.py::test_health <span class="ok">PASSED</span>                                        [100%]
+
+1 passed in 0.32s</pre>
+      <div class="callout">
+        <p><b>If resume-app isn't running</b>, you'd see <code>requests.exceptions.ConnectionError: ... Connection refused</code> instead — worth seeing once now so it's recognizable later. It means the test's code was never the problem; there was nothing listening on that port.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <h2>Stop repeating the URL</h2>
+      <div class="concept">
+        <span class="label">concept</span>
+        <p>A <b>fixture</b> is reusable setup that pytest hands to any test function that asks for it by parameter name — pytest sees a parameter called <code>base_url</code>, finds a fixture with that name, calls it, and passes the result in. It lives in a special file, <code>conftest.py</code>, that pytest loads automatically.</p>
+      </div>
+      <span class="file-label">conftest.py</span>
+      <pre>import pytest
+
+@pytest.fixture
+def base_url():
+    return "http://localhost:8080"</pre>
+      <span class="file-label">test_smoke.py</span>
+      <pre>import requests
+
+def test_health(base_url):
+    resp = requests.get(f"{base_url}/api/health")
+    assert resp.status_code == 200
+    assert resp.json()["status"] == "ok"</pre>
+      <pre class="cmd">.venv/bin/pytest -v</pre>
+      <pre class="output">test_smoke.py::test_health <span class="ok">PASSED</span>                                        [100%]
+
+1 passed in 0.05s</pre>
+      <p>Now every test in the file can just ask for <code>base_url</code> instead of hardcoding it — and if you ever needed to point at a different environment, you'd change it in exactly one place.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-body">
+      <h2>Build a real test, one assertion at a time</h2>
+      <p>Create <code>test_pdf.py</code> and start with the simplest possible check:</p>
+      <span class="file-label">test_pdf.py</span>
+      <pre>import requests
+
+def test_pdf_download(base_url):
+    resp = requests.get(f"{base_url}/api/resumes/divya-kodukula/pdf")
+    assert resp.status_code == 200</pre>
+      <pre class="cmd">.venv/bin/pytest test_pdf.py -v</pre>
+      <pre class="output">test_pdf.py::test_pdf_download <span class="ok">PASSED</span>                                    [100%]
+
+1 passed in 0.20s</pre>
+      <p>That passes — but it would <em>also</em> pass if the server crashed and returned a 200 with garbage in the body, or the wrong file type entirely. Layer on two more checks:</p>
+      <span class="file-label">test_pdf.py</span>
+      <pre>import requests
+
+def test_pdf_download(base_url):
+    resp = requests.get(f"{base_url}/api/resumes/divya-kodukula/pdf")
+    assert resp.status_code == 200
+    assert resp.headers["content-type"] == "application/pdf"
+    assert resp.content[:4] == b"%PDF"</pre>
+      <pre class="cmd">.venv/bin/pytest test_pdf.py -v</pre>
+      <pre class="output">test_pdf.py::test_pdf_download <span class="ok">PASSED</span>                                    [100%]
+
+1 passed in 0.19s</pre>
+      <div class="concept">
+        <span class="label">why three checks, not one</span>
+        <p>Each assertion guards a different failure mode: <code>status_code</code> catches a crash or error response; <code>content-type</code> catches the server returning the right status but the wrong kind of response (say, an HTML error page with a 200); the magic-bytes check (<code>b"%PDF"</code> is how every real PDF file starts) catches a response that looks fine on the surface but is actually empty or corrupted. None of the three implies the others.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">6</div>
+    <div class="step-body">
+      <h2>Test the unhappy path too</h2>
+      <p>A suite that only checks things working isn't finished — add a case for a resume that doesn't exist:</p>
+      <span class="file-label">test_pdf.py</span>
+      <pre>def test_pdf_unknown_slug_is_404(base_url):
+    resp = requests.get(f"{base_url}/api/resumes/does-not-exist/pdf")
+    assert resp.status_code == 404</pre>
+      <pre class="cmd">.venv/bin/pytest test_pdf.py -v</pre>
+      <pre class="output">test_pdf.py::test_pdf_download <span class="ok">PASSED</span>                                    [ 50%]
+test_pdf.py::test_pdf_unknown_slug_is_404 <span class="ok">PASSED</span>                         [100%]
+
+2 passed in 0.22s</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">7</div>
+    <div class="step-body">
+      <h2>Graduate to the real suite</h2>
+      <p>You've just rebuilt the core ideas behind <a href="https://github.com/divyakodu/learning-lab/tree/main/api-pytest"><code>api-pytest</code></a> — same fixture pattern, same layered-assertion approach, extended to cover the list endpoint, the DOCX download, and nginx's load-balancing headers too. Run the real thing:</p>
+      <pre class="cmd">cd learning-lab/api-pytest
+./setup.sh
+./run.sh</pre>
+      <pre class="output">tests/test_downloads.py::test_pdf_download <span class="ok">PASSED</span>
+tests/test_downloads.py::test_docx_download <span class="ok">PASSED</span>
+tests/test_downloads.py::test_pdf_download_unknown_slug_is_404 <span class="ok">PASSED</span>
+tests/test_health.py::test_health_ok <span class="ok">PASSED</span>
+tests/test_load_balancing.py::test_health_round_robins_across_both_backends <span class="ok">PASSED</span>
+tests/test_load_balancing.py::test_served_by_header_present <span class="ok">PASSED</span>
+tests/test_resumes.py::test_list_resumes_contains_known_slug <span class="ok">PASSED</span>
+tests/test_resumes.py::test_list_resumes_summary_shape <span class="ok">PASSED</span>
+tests/test_resumes.py::test_get_resume_detail <span class="ok">PASSED</span>
+tests/test_resumes.py::test_get_resume_not_found <span class="ok">PASSED</span>
+
+10 passed in 0.25s</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">8</div>
+    <div class="step-body">
+      <h2>Now break it, on purpose</h2>
+      <p>Reinforce what each assertion is actually for by making it fail, in the real suite this time:</p>
+      <ul class="practice">
+        <li>Comment out <code>pydyf==0.10.0</code> in <code>resume-app/backend/python-fastapi/requirements.txt</code>, rebuild (<code>docker compose build --no-cache backend1 backend2 &amp;&amp; docker compose up -d</code>). <code>test_pdf_download</code> fails — a real bug this pin fixes.</li>
+        <li>Comment out <code>add_header X-Served-By ...;</code> in <code>resume-app/nginx/nginx.conf</code>, <code>docker compose restart nginx</code>. <code>test_served_by_header_present</code> fails.</li>
+        <li>Comment out <code>server backend2:8000;</code> in the same file's upstream block, restart nginx. <code>test_health_round_robins_across_both_backends</code> fails — only <code>backend1</code> ever answers.</li>
+      </ul>
+      <p>Undo each change and confirm you're back to 10/10 before moving on.</p>
+    </div>
+  </div>
+
+  <div class="nav-footer">
+    <a href="index.html">&larr; Back to learning-lab</a>
+    <a href="ui-playwright.html">Next: learn Playwright &rarr;</a>
+  </div>
+
+  <footer class="page-footer">learning-lab · docs/api-pytest.html · every command and output above was actually run.</footer>
+
+</div>

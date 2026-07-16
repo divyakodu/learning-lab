@@ -42,97 +42,50 @@
     font-family: var(--font-body); font-size: 16px; line-height: 1.6;
     -webkit-font-smoothing: antialiased;
   }
-  .page { max-width: 880px; margin: 0 auto; padding: clamp(28px, 5vw, 64px) clamp(18px, 4vw, 28px) 80px; }
+  .page { max-width: 800px; margin: 0 auto; padding: clamp(28px, 5vw, 64px) clamp(18px, 4vw, 28px) 80px; }
   a { color: var(--accent); }
   :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   p { max-width: 68ch; }
 
   header.masthead { border-bottom: 1px solid var(--line); padding-bottom: 22px; margin-bottom: 44px; }
-  .eyebrow {
-    font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em;
-    text-transform: uppercase; color: var(--ink-soft); margin: 0 0 8px;
-  }
-  h1 {
-    font-family: var(--font-display); font-size: clamp(1.8rem, 1.4rem + 1.6vw, 2.5rem);
-    font-weight: 600; margin: 0 0 10px; text-wrap: balance;
-  }
-  .dek { font-size: 1.0625rem; color: var(--ink-soft); max-width: 62ch; margin: 0 0 18px; }
-  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-  .chip {
-    font-family: var(--font-mono); font-size: 0.75rem; padding: 4px 10px; border-radius: 3px;
-    border: 1px solid var(--line); color: var(--ink-soft); background: var(--surface);
-  }
-  .chip.ok { color: var(--success); border-color: var(--success); background: var(--success-soft); }
+  .eyebrow { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 8px; }
+  h1 { font-family: var(--font-display); font-size: clamp(1.8rem, 1.4rem + 1.6vw, 2.5rem); font-weight: 600; margin: 0 0 10px; text-wrap: balance; }
+  .dek { font-size: 1.0625rem; color: var(--ink-soft); max-width: 62ch; margin: 0 0 4px; }
 
-  section { margin-bottom: 54px; }
-  section > h2 {
-    font-family: var(--font-display); font-size: 1.375rem; font-weight: 600;
-    margin: 0 0 6px; display: flex; align-items: baseline; gap: 10px;
-  }
-  section > h2 .num { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--ink-soft); font-weight: 400; }
-  section > .lede { color: var(--ink-soft); max-width: 68ch; margin: 0 0 22px; }
-  .prose p { margin: 0 0 14px; }
-  .prose p:last-child { margin-bottom: 0; }
+  section { margin-bottom: 50px; }
+  section > h2 { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; margin: 0 0 6px; }
+  section > .lede { color: var(--ink-soft); max-width: 68ch; margin: 0 0 20px; }
 
-  .callout {
-    background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 6px;
+  /* ---------- tutorial cards ---------- */
+  .tut-cards { display: flex; flex-direction: column; gap: 14px; }
+  .tut-card {
+    display: block; background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+    padding: 20px 22px; text-decoration: none; color: inherit; transition: border-color .15s ease;
+  }
+  .tut-card:hover { border-color: var(--accent); }
+  .tut-card .num { font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); }
+  .tut-card h3 { margin: 4px 0 6px; font-family: var(--font-display); font-size: 1.125rem; }
+  .tut-card p { margin: 0; color: var(--ink-soft); font-size: 0.9375rem; max-width: none; }
+  .tut-card .tags { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .tut-card .tag { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-soft); border: 1px solid var(--line); border-radius: 3px; padding: 1px 7px; }
+
+  .callout.finding {
+    background: var(--warn-soft); border: 1px solid var(--warn); border-radius: 6px;
     padding: 14px 18px; font-size: 0.9375rem; margin: 18px 0;
   }
-  .callout p { max-width: none; margin: 0; }
-  .callout.finding { background: var(--warn-soft); border-color: var(--warn); }
+  .callout.finding p { max-width: none; margin: 0; }
 
-  /* ---------- tables ---------- */
   .table-wrap { overflow-x: auto; }
   table { border-collapse: collapse; width: 100%; font-size: 0.9375rem; }
   th, td { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
   th { font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); font-weight: 600; }
   td code { font-family: var(--font-mono); background: var(--surface-2); padding: 1px 6px; border-radius: 3px; font-size: 0.85em; }
-  tr[data-num] td:first-child { font-family: var(--font-mono); color: var(--ink-soft); }
-  td.num { font-variant-numeric: tabular-nums; }
 
   pre {
-    background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px;
-    overflow-x: auto; font-family: var(--font-mono); font-size: 0.8125rem; line-height: 1.6;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px;
+    overflow-x: auto; font-family: var(--font-mono); font-size: 0.8125rem; line-height: 1.6; margin: 10px 0;
   }
   pre .c { color: var(--ink-soft); }
-  pre .k { color: var(--accent); }
-
-  /* ---------- tabs ---------- */
-  .tabs {
-    background: var(--surface); border: 1px solid var(--line); border-radius: 8px; overflow: hidden;
-  }
-  .tab-buttons { display: flex; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
-  .tab-btn {
-    flex: 1; min-width: 140px; font-family: var(--font-mono); font-size: 0.8125rem;
-    padding: 12px 14px; background: var(--surface-2); border: none; border-right: 1px solid var(--line);
-    color: var(--ink-soft); cursor: pointer; text-align: center;
-  }
-  .tab-btn:last-child { border-right: none; }
-  .tab-btn[aria-selected="true"] { background: var(--surface); color: var(--accent); font-weight: 600; }
-  .tab-panel { display: none; padding: 20px; }
-  .tab-panel.is-active { display: block; }
-  .tab-panel h4 { margin: 0 0 8px; font-size: 1rem; }
-  .tab-panel .annotation { font-size: 0.9375rem; color: var(--ink-soft); margin-top: 12px; }
-  .tab-panel .annotation b { color: var(--ink); }
-
-  /* ---------- accordion ---------- */
-  .accordion { display: flex; flex-direction: column; gap: 8px; }
-  .acc-item { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
-  .acc-trigger {
-    width: 100%; text-align: left; background: none; border: none; cursor: pointer;
-    padding: 14px 16px; font-family: var(--font-body); font-size: 0.9375rem; color: var(--ink);
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  }
-  .acc-trigger .stack-tag {
-    font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-soft);
-    border: 1px solid var(--line); border-radius: 3px; padding: 1px 7px; white-space: nowrap;
-  }
-  .acc-trigger .chevron { transition: transform .2s ease; color: var(--ink-soft); flex-shrink: 0; }
-  .acc-item[data-open="true"] .chevron { transform: rotate(90deg); }
-  .acc-body { display: none; padding: 0 16px 16px; font-size: 0.9375rem; color: var(--ink-soft); }
-  .acc-item[data-open="true"] .acc-body { display: block; }
-  .acc-body b { color: var(--ink); }
-  .acc-body code { font-family: var(--font-mono); background: var(--surface-2); padding: 1px 6px; border-radius: 3px; font-size: 0.85em; }
 
   .status-pill { display: inline-block; font-family: var(--font-mono); font-size: 0.75rem; padding: 2px 8px; border-radius: 3px; }
   .status-pill.done { color: var(--success); background: var(--success-soft); }
@@ -145,152 +98,66 @@
 
   <header class="masthead">
     <p class="eyebrow">learning-lab · the learning hub</p>
-    <h1>Learning to test resume-app, three ways</h1>
-    <p class="dek">learning-lab isn't just three folders of test code — it's the same app, tested with three genuinely different questions in mind. This page walks through what each question is, how the code answers it, and one real finding each approach caught that the others couldn't. New here? Start with <a href="https://claude.ai/code/artifact/fe709245-d732-498e-88a9-68a6472922f5">resume-app's guide</a> first, so the app itself makes sense before its tests do.</p>
-    <div class="chips">
-      <span class="chip ok">api-pytest 10/10</span>
-      <span class="chip ok">ui-playwright 7/7</span>
-      <span class="chip ok">load-locust 0% failures @ 20 users</span>
-    </div>
+    <h1>Learn to test resume-app, one framework at a time</h1>
+    <p class="dek">Three tutorials, each teaching a framework from zero by building real tests against a real running app — not a finished suite to read, a suite you build yourself, one concept at a time. New to resume-app itself? Start with <a href="https://claude.ai/code/artifact/fe709245-d732-498e-88a9-68a6472922f5">its architecture guide</a> first.</p>
   </header>
 
-  <section aria-labelledby="h-three">
-    <h2 id="h-three"><span class="num">01</span> Three questions, three tools</h2>
-    <p class="lede">Every test in this repo answers one of three questions. Confusing them is the single most common mistake in test automation — a suite that only ever asks the first question will ship a slow, broken-feeling app with a fully green pipeline.</p>
+  <section aria-labelledby="h-pick">
+    <h2 id="h-pick">Pick a tutorial</h2>
+    <p class="lede">Each is self-contained and takes about 15 minutes, ending with you running the real stack that lives in this repo.</p>
+    <div class="tut-cards">
+      <a class="tut-card" href="api-pytest.html">
+        <span class="num">01 · api-pytest</span>
+        <h3>Learn pytest — does the API work?</h3>
+        <p>Write HTTP tests from scratch: your first assertion, a fixture, then a real PDF-download test built up one check at a time.</p>
+        <div class="tags"><span class="tag">Python</span><span class="tag">pytest</span><span class="tag">requests</span></div>
+      </a>
+      <a class="tut-card" href="ui-playwright.html">
+        <span class="num">02 · ui-playwright</span>
+        <h3>Learn Playwright — does it work for a user?</h3>
+        <p>Drive a real browser: find elements the stable way, script a click, then verify an actual file download.</p>
+        <div class="tags"><span class="tag">TypeScript</span><span class="tag">Playwright</span><span class="tag">Chromium</span></div>
+      </a>
+      <a class="tut-card" href="load-locust.html">
+        <span class="num">03 · load-locust</span>
+        <h3>Learn Locust — does it hold up under load?</h3>
+        <p>Simulate concurrent users, learn why percentiles matter, then reproduce a real finding: 0% failures, but a multi-second latency tail once a backend replica goes down.</p>
+        <div class="tags"><span class="tag">Python</span><span class="tag">Locust</span></div>
+      </a>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-why">
+    <h2 id="h-why">Why three, not one</h2>
+    <p class="lede">Each tutorial answers a genuinely different question — confusing them is the most common mistake in test automation.</p>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Question</th><th>Tool</th><th>What it actually checks</th></tr></thead>
+        <thead><tr><th>Question</th><th>Tutorial</th></tr></thead>
         <tbody>
-          <tr><td><b>Does it work?</b></td><td><code>api-pytest</code></td><td>The API returns correct data, correct status codes, correct file bytes — one request at a time, in isolation</td></tr>
-          <tr><td><b>Does it work the way a user experiences it?</b></td><td><code>ui-playwright</code></td><td>Clicking things in a real browser produces the right visible result, using the same hooks (<code>data-testid</code>) a user's actions would trigger</td></tr>
-          <tr><td><b>Does it still work well under load?</b></td><td><code>load-locust</code></td><td>Response times and failure rates when many requests arrive at once — not correctness, <em>capacity</em></td></tr>
+          <tr><td><b>Does it work?</b> — correct data, correct status codes, correct file bytes, one request at a time</td><td><a href="api-pytest.html">api-pytest</a></td></tr>
+          <tr><td><b>Does it work the way a user experiences it?</b> — real clicks in a real browser</td><td><a href="ui-playwright.html">ui-playwright</a></td></tr>
+          <tr><td><b>Does it still work well under load?</b> — throughput and latency with many requests at once</td><td><a href="load-locust.html">load-locust</a></td></tr>
         </tbody>
       </table>
     </div>
-  </section>
-
-  <section aria-labelledby="h-walkthrough">
-    <h2 id="h-walkthrough"><span class="num">02</span> One real test from each, annotated</h2>
-    <p class="lede">Not simplified examples — the actual test files, and why each assertion is there.</p>
-
-    <div class="tabs">
-      <div class="tab-buttons" role="tablist">
-        <button class="tab-btn" role="tab" aria-selected="true" data-tab="api">api-pytest</button>
-        <button class="tab-btn" role="tab" aria-selected="false" data-tab="ui">ui-playwright</button>
-        <button class="tab-btn" role="tab" aria-selected="false" data-tab="load">load-locust</button>
-      </div>
-
-      <div class="tab-panel is-active" data-panel="api">
-        <h4>api-pytest/tests/test_downloads.py</h4>
-        <pre><span class="k">def</span> test_pdf_download(base_url, known_slug):
-    resp = requests.get(f<span class="c">"{base_url}/api/resumes/{known_slug}/pdf"</span>)
-    <span class="k">assert</span> resp.status_code == 200
-    <span class="k">assert</span> resp.headers[<span class="c">"content-type"</span>] == <span class="c">"application/pdf"</span>
-    <span class="k">assert</span> resp.content[:4] == b<span class="c">"%PDF"</span></pre>
-        <p class="annotation"><b>Why three separate assertions, not one:</b> a status-code-only check would pass even if weasyprint silently failed and the endpoint returned an empty 200. Checking the content-type <em>and</em> the file's actual magic bytes (<code>%PDF</code>) means the test fails loudly the moment PDF generation is broken — which, per the fix log, it once was.</p>
-      </div>
-
-      <div class="tab-panel" data-panel="ui">
-        <h4>ui-playwright/tests/downloads.spec.ts</h4>
-        <pre><span class="k">test</span>(<span class="c">"PDF download button produces a real PDF"</span>, <span class="k">async</span> ({ page }) => {
-  <span class="k">await</span> page.goto(`/resume.html?slug=${KNOWN_SLUG}`);
-  <span class="k">const</span> [download] = <span class="k">await</span> Promise.all([
-    page.waitForEvent(<span class="c">"download"</span>),
-    page.getByTestId(<span class="c">"download-pdf"</span>).click(),
-  ]);
-  <span class="k">const</span> buf = fs.readFileSync(<span class="k">await</span> download.path());
-  expect(buf.subarray(0, 4).toString()).toBe(<span class="c">"%PDF"</span>);
-});</pre>
-        <p class="annotation"><b>Why <code>getByTestId</code>, not a CSS selector or button text:</b> a copy change ("Download PDF" → "Get PDF") or a class-name refactor wouldn't break this test — only removing the <code>data-testid</code> attribute itself would, which is a deliberate, visible decision, not an accident. <b>Why read the file's bytes</b> instead of just checking the click didn't throw: a silently-broken download (0-byte file, wrong content) would still "succeed" by that lower bar.</p>
-      </div>
-
-      <div class="tab-panel" data-panel="load">
-        <h4>load-locust/locustfile.py</h4>
-        <pre><span class="k">class</span> ResumeAppUser(HttpUser):
-    wait_time = between(0.5, 2)
-
-    @task(10)
-    <span class="k">def</span> view_list(self):
-        self.client.get(<span class="c">"/api/resumes"</span>, name=<span class="c">"/api/resumes"</span>)
-
-    @task(2)
-    <span class="k">def</span> download_pdf(self):
-        self.client.get(f<span class="c">"/api/resumes/{SLUG}/pdf"</span>, name=<span class="c">"/api/resumes/[slug]/pdf"</span>)</pre>
-        <p class="annotation"><b>Why relative weights (<code>@task(10)</code> vs <code>@task(2)</code>):</b> real traffic isn't uniform — browsing the list is far more common than downloading a PDF, so the simulated load should reflect that mix, not hammer every endpoint equally. See §04 below for what this actually caught.</p>
-      </div>
-    </div>
-  </section>
-
-  <section aria-labelledby="h-load-story">
-    <h2 id="h-load-story"><span class="num">03</span> What load testing catches that the others can't</h2>
-    <p class="lede">This is the finding worth internalizing more than any single assertion above.</p>
-    <div class="prose">
-      <p>Stopping one of resume-app's two backend replicas (<code>docker compose stop backend2</code>) and re-running <code>api-pytest</code> would show... all 10 tests still passing. nginx silently retries any request that hits the dead replica onto the surviving one, so every response still eventually arrives correct.</p>
-      <div class="callout finding">
-        <p><b>Verified finding:</b> running <code>load-locust</code> in that same state — one replica down — showed a <b>0% failure rate</b>, but <b>p90 latency jumped from ~50ms to ~7.6 seconds, and p99 to 13-14 seconds.</b> Every request "worked." The app was, in practice, unusable.</p>
-      </div>
-      <p>That gap — 100% functionally correct, and simultaneously in real trouble — is exactly why load testing exists as its own discipline rather than "more of the same tests, but faster." Full numbers and the exact repro steps are in <a href="https://github.com/divyakodu/learning-lab/tree/main/load-locust">load-locust's README</a>.</p>
-    </div>
-  </section>
-
-  <section aria-labelledby="h-decision">
-    <h2 id="h-decision"><span class="num">04</span> Which one do I reach for?</h2>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>You're worried about...</th><th>Reach for</th></tr></thead>
-        <tbody>
-          <tr><td>A field is missing, a status code is wrong, a file's content is corrupt</td><td><code>api-pytest</code></td></tr>
-          <tr><td>Something a user would click doesn't do what it should</td><td><code>ui-playwright</code></td></tr>
-          <tr><td>It works fine alone but might fall over with real traffic, or when part of the infra is degraded</td><td><code>load-locust</code></td></tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <section aria-labelledby="h-try">
-    <h2 id="h-try"><span class="num">05</span> Try it yourself</h2>
-    <p class="lede">Every one of these was actually reproduced — broken, observed, reverted — before being written down. Click to see what's verified to happen.</p>
-    <div class="accordion" id="accordion">
-      <div class="acc-item">
-        <button class="acc-trigger"><span><span class="stack-tag">api-pytest</span> Remove the <code>pydyf==0.10.0</code> pin and rebuild</span><span class="chevron">›</span></button>
-        <div class="acc-body">Comment it out in <code>resume-app/backend/python-fastapi/requirements.txt</code>, then <code>docker compose build --no-cache backend1 backend2 && docker compose up -d</code>. <b>Result:</b> <code>test_pdf_download</code> fails — the endpoint 500s. This is the real bug from resume-app's fix log; the pin is the fix.</div>
-      </div>
-      <div class="acc-item">
-        <button class="acc-trigger"><span><span class="stack-tag">api-pytest</span> Comment out the <code>X-Served-By</code> header line</span><span class="chevron">›</span></button>
-        <div class="acc-body">In <code>resume-app/nginx/nginx.conf</code>'s <code>location /api/</code> block, comment out <code>add_header X-Served-By ...;</code>, then <code>docker compose restart nginx</code>. <b>Result:</b> <code>test_served_by_header_present</code> fails immediately — the header's just gone.</div>
-      </div>
-      <div class="acc-item">
-        <button class="acc-trigger"><span><span class="stack-tag">api-pytest</span> Comment out <code>backend2</code> in nginx's upstream block</span><span class="chevron">›</span></button>
-        <div class="acc-body">In the same <code>nginx.conf</code>, comment out <code>server backend2:8000;</code>, restart nginx. <b>Result:</b> <code>test_health_round_robins_across_both_backends</code> fails — every request now lands on <code>backend1</code> alone.</div>
-      </div>
-      <div class="acc-item">
-        <button class="acc-trigger"><span><span class="stack-tag">ui-playwright</span> Rename a <code>data-testid</code></span><span class="chevron">›</span></button>
-        <div class="acc-body">In <code>resume-app/frontend/html-js/js/app.js</code>, change <code>resume-link-${r.slug}</code> to <code>link-${r.slug}</code> in <code>loadList()</code> — no rebuild needed, refresh is enough. <b>Result:</b> the list-rendering test times out after 5s, unable to find <code>getByTestId("resume-link-divya-kodukula")</code>.</div>
-      </div>
-      <div class="acc-item">
-        <button class="acc-trigger"><span><span class="stack-tag">ui-playwright</span> Delete the PDF link wiring</span><span class="chevron">›</span></button>
-        <div class="acc-body">In the same file's <code>loadDetail()</code>, delete the <code>document.getElementById("pdf-link").href = ...</code> line. <b>Result:</b> the download test fails — clicking has nowhere to point, so no download event ever fires.</div>
-      </div>
-      <div class="acc-item">
-        <button class="acc-trigger"><span><span class="stack-tag">load-locust</span> Stop one backend replica</span><span class="chevron">›</span></button>
-        <div class="acc-body"><code>cd resume-app && docker compose stop backend2</code>, then rerun <code>load-locust</code>'s <code>./run.sh</code>. <b>Result:</b> failure rate stays 0%, but p90 latency goes from ~50ms to ~7.6s and p99 to 13-14s. See §03 above — this is the headline finding of this whole repo.</div>
-      </div>
+    <div class="callout finding">
+      <p><b>Why this distinction is not academic:</b> stopping one of resume-app's two backend replicas leaves every functional test passing — nginx quietly retries onto the survivor. Only the load tutorial's percentile numbers reveal that p90 latency has jumped from milliseconds to seconds. Full repro in <a href="load-locust.html">the load-locust tutorial</a>, step 5.</p>
     </div>
   </section>
 
   <section aria-labelledby="h-setup">
-    <h2 id="h-setup"><span class="num">06</span> Setup, quick reference</h2>
-    <p class="lede">All three stacks need resume-app running first, and follow the same shape.</p>
+    <h2 id="h-setup">Setup, quick reference</h2>
+    <p class="lede">All three need resume-app running first.</p>
     <pre>cd resume-app &amp;&amp; scripts/start.sh   <span class="c"># http://localhost:8080</span>
 
 cd learning-lab/api-pytest      &amp;&amp; ./setup.sh &amp;&amp; ./run.sh
 cd learning-lab/ui-playwright   &amp;&amp; ./setup.sh &amp;&amp; ./run.sh
 cd learning-lab/load-locust     &amp;&amp; ./setup.sh &amp;&amp; ./run.sh</pre>
-    <p class="lede" style="margin-top: 14px;">Each stack's own README has full setup/run detail, override env vars, and last-verified-run output. This page is the map; those READMEs are the territory.</p>
+    <p class="lede" style="margin-top: 14px;">Each stack's own README has full setup/run detail and its own "try breaking this on purpose" exercises for after the tutorial.</p>
   </section>
 
   <section aria-labelledby="h-roadmap">
-    <h2 id="h-roadmap"><span class="num">07</span> Roadmap</h2>
+    <h2 id="h-roadmap">Roadmap</h2>
     <div class="table-wrap">
       <table>
         <thead><tr><th>Stack</th><th>Status</th></tr></thead>
@@ -305,33 +172,7 @@ cd learning-lab/load-locust     &amp;&amp; ./setup.sh &amp;&amp; ./run.sh</pre>
   </section>
 
   <footer>
-    learning-lab · docs/index.html · every code snippet and number on this page came from an actual run, not a hypothetical.
+    learning-lab · docs/index.html · every command and number linked from here came from an actual run.
   </footer>
 
 </div>
-
-<script>
-(function () {
-  document.querySelectorAll(".tab-btn").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      var target = btn.dataset.tab;
-      document.querySelectorAll(".tab-btn").forEach(function (b) { b.setAttribute("aria-selected", "false"); });
-      btn.setAttribute("aria-selected", "true");
-      document.querySelectorAll(".tab-panel").forEach(function (p) {
-        p.classList.toggle("is-active", p.dataset.panel === target);
-      });
-    });
-  });
-
-  document.querySelectorAll(".acc-item").forEach(function (item) {
-    item.setAttribute("data-open", "false");
-    var trigger = item.querySelector(".acc-trigger");
-    trigger.setAttribute("aria-expanded", "false");
-    trigger.addEventListener("click", function () {
-      var open = item.getAttribute("data-open") === "true";
-      item.setAttribute("data-open", open ? "false" : "true");
-      trigger.setAttribute("aria-expanded", open ? "false" : "true");
-    });
-  });
-})();
-</script>

@@ -1,0 +1,264 @@
+<!doctype html>
+<title>Learn Playwright by testing resume-app</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #eef0f0; --surface: #ffffff; --surface-2: #e3e8ea;
+    --ink: #1b2430; --ink-soft: #56636f; --line: #c7d0d4;
+    --accent: #2b5d8c; --accent-soft: #dce7f0;
+    --success: #3f7d58; --success-soft: #dfeee5;
+    --warn: #b5651d; --warn-soft: #f3e3d2;
+    --font-display: Iowan Old Style, "Palatino Linotype", Palatino, Georgia, serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10161d; --surface: #182029; --surface-2: #1f2833;
+      --ink: #dde3e8; --ink-soft: #93a2ac; --line: #2b3743;
+      --accent: #6ba8da; --accent-soft: #1c2c3a;
+      --success: #6fbe8c; --success-soft: #17281f;
+      --warn: #d9a15b; --warn-soft: #2b2013;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10161d; --surface: #182029; --surface-2: #1f2833;
+    --ink: #dde3e8; --ink-soft: #93a2ac; --line: #2b3743;
+    --accent: #6ba8da; --accent-soft: #1c2c3a;
+    --success: #6fbe8c; --success-soft: #17281f;
+    --warn: #d9a15b; --warn-soft: #2b2013;
+  }
+  :root[data-theme="light"] {
+    --bg: #eef0f0; --surface: #ffffff; --surface-2: #e3e8ea;
+    --ink: #1b2430; --ink-soft: #56636f; --line: #c7d0d4;
+    --accent: #2b5d8c; --accent-soft: #dce7f0;
+    --success: #3f7d58; --success-soft: #dfeee5;
+    --warn: #b5651d; --warn-soft: #f3e3d2;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--font-body); font-size: 16px; line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { max-width: 760px; margin: 0 auto; padding: clamp(28px, 5vw, 64px) clamp(18px, 4vw, 28px) 80px; }
+  a { color: var(--accent); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  p { max-width: 68ch; }
+
+  .breadcrumb { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--ink-soft); margin: 0 0 18px; }
+  header.masthead { border-bottom: 1px solid var(--line); padding-bottom: 22px; margin-bottom: 44px; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--ink-soft); margin: 0 0 8px;
+  }
+  h1 {
+    font-family: var(--font-display); font-size: clamp(1.7rem, 1.3rem + 1.6vw, 2.3rem);
+    font-weight: 600; margin: 0 0 10px; text-wrap: balance;
+  }
+  .dek { font-size: 1.0625rem; color: var(--ink-soft); max-width: 62ch; margin: 0 0 4px; }
+  .meta { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--ink-soft); margin-top: 14px; }
+
+  .step { display: grid; grid-template-columns: 34px 1fr; gap: 16px; margin-bottom: 40px; }
+  .step-num {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--accent-soft); color: var(--accent);
+    display: flex; align-items: center; justify-content: center; font-family: var(--font-mono);
+    font-size: 0.9375rem; font-weight: 600; flex-shrink: 0;
+  }
+  .step-body h2 { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; margin: 4px 0 10px; }
+  .step-body > p { margin: 0 0 12px; color: var(--ink-soft); }
+  .step-body > p:last-child { margin-bottom: 0; }
+
+  .concept {
+    background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0; padding: 12px 16px; margin: 12px 0; font-size: 0.9375rem;
+  }
+  .concept p { margin: 0; max-width: none; }
+  .concept .label { font-family: var(--font-mono); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); display: block; margin-bottom: 4px; }
+
+  .callout {
+    background: var(--warn-soft); border: 1px solid var(--warn); border-radius: 6px;
+    padding: 12px 16px; font-size: 0.9375rem; margin: 12px 0;
+  }
+  .callout p { margin: 0; max-width: none; }
+
+  pre {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px;
+    overflow-x: auto; font-family: var(--font-mono); font-size: 0.8125rem; line-height: 1.55; margin: 10px 0;
+  }
+  pre.cmd { border-left: 3px solid var(--ink-soft); }
+  pre.cmd::before { content: "$ "; color: var(--ink-soft); }
+  pre.output { background: var(--surface-2); color: var(--ink-soft); }
+  pre.output .ok { color: var(--success); }
+  pre.output .fail { color: var(--warn); }
+  pre .c { color: var(--ink-soft); }
+
+  .file-label { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-soft); margin: 14px 0 -4px; display: block; }
+
+  .practice { display: flex; flex-direction: column; gap: 10px; }
+  .practice li { list-style: none; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px 16px; font-size: 0.9375rem; }
+  .practice code { font-family: var(--font-mono); background: var(--surface-2); padding: 1px 6px; border-radius: 3px; font-size: 0.85em; }
+
+  .nav-footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; border-top: 1px solid var(--line); padding-top: 20px; margin-top: 8px; font-size: 0.9375rem; }
+  footer.page-footer { border-top: 1px solid var(--line); padding-top: 18px; color: var(--ink-soft); font-size: 0.8125rem; margin-top: 40px; }
+</style>
+
+<div class="page">
+
+  <p class="breadcrumb"><a href="index.html">learning-lab</a> / ui-playwright tutorial</p>
+
+  <header class="masthead">
+    <p class="eyebrow">tutorial · build along</p>
+    <h1>Learn Playwright by testing resume-app's UI</h1>
+    <p class="dek">No prior Playwright knowledge assumed. This is a different kind of testing than the API tutorial — instead of checking what the server returns, you'll drive a real browser and check what a person would actually see and do.</p>
+    <p class="meta">~15 minutes · needs resume-app running and Node.js</p>
+  </header>
+
+  <div class="step">
+    <div class="step-num">0</div>
+    <div class="step-body">
+      <h2>Before you start</h2>
+      <p>Start resume-app in another terminal, and leave it running for the whole tutorial:</p>
+      <pre class="cmd">cd resume-app
+scripts/start.sh</pre>
+      <p>Then set up a project and install Playwright — it needs an actual browser binary, not just a JS library, so the install step downloads one:</p>
+      <pre class="cmd">mkdir pw-tutorial &amp;&amp; cd pw-tutorial
+npm init -y
+npm install --save-dev @playwright/test
+npx playwright install chromium</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <h2>What Playwright actually does</h2>
+      <div class="concept">
+        <span class="label">concept</span>
+        <p>pytest talks to resume-app's API directly over HTTP. Playwright instead launches a real, invisible (headless) Chromium browser, points it at a URL, and lets you script the same actions a person would take — click, type, wait for things to appear — then makes assertions about what actually rendered. It's testing the same app from the other side: through the screen, not through the wire.</p>
+      </div>
+      <p>Create <code>tests/smoke.spec.js</code>:</p>
+      <span class="file-label">tests/smoke.spec.js</span>
+      <pre>const { test, expect } = require('@playwright/test');
+
+test('resume-app homepage loads', async ({ page }) => {
+  await page.goto('http://localhost:8080/index.html');
+  await expect(page).toHaveTitle('Resume App');
+});</pre>
+      <pre class="cmd">npx playwright test</pre>
+      <pre class="output">Running 1 test using 1 worker
+
+  <span class="ok">✓</span>  1 tests/smoke.spec.js:3:1 › resume-app homepage loads (90ms)
+
+  1 passed (1.6s)</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <h2>Find things the way a test should</h2>
+      <div class="concept">
+        <span class="label">concept</span>
+        <p>You could find elements by CSS class or button text, but both change for reasons that have nothing to do with the feature breaking — a redesign, a copy edit. resume-app's frontend carries <code>data-testid</code> attributes specifically so tests can reference elements by a stable, intentional name instead. <code>page.getByTestId(...)</code> is how Playwright looks those up.</p>
+      </div>
+      <pre>test('resume list shows the known resume', async ({ page }) => {
+  await page.goto('http://localhost:8080/index.html');
+  await expect(page.getByTestId('resume-link-divya-kodukula')).toBeVisible();
+});</pre>
+      <pre class="cmd">npx playwright test</pre>
+      <pre class="output">  <span class="ok">✓</span>  1 tests/smoke.spec.js:3:1 › resume list shows the known resume (183ms)
+
+  1 passed (597ms)</pre>
+      <div class="callout">
+        <p><b>Typo the testid</b> (<code>resume-link-nope</code>) and you'd see: <code>Error: expect(locator).toBeVisible() failed ... Timeout: 5000ms ... element(s) not found</code>. Worth causing once on purpose — Playwright waits the full timeout before giving up, since the element might just be loading slowly, so a "not found" failure takes a few seconds to report, not milliseconds.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <h2>Script a real interaction</h2>
+      <p>Click the link, and check the browser actually navigated and rendered the right content:</p>
+      <pre>test('clicking a resume link goes to its detail page', async ({ page }) => {
+  await page.goto('http://localhost:8080/index.html');
+  await page.getByTestId('resume-link-divya-kodukula').click();
+  await expect(page).toHaveURL(/resume\.html\?slug=divya-kodukula/);
+  await expect(page.getByTestId('resume-name')).toHaveText('Divya Kodukula');
+});</pre>
+      <pre class="cmd">npx playwright test</pre>
+      <pre class="output">  <span class="ok">✓</span>  1 tests/smoke.spec.js:3:1 › clicking a resume link goes to its detail page (150ms)
+
+  1 passed (429ms)</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <h2>Verify an actual file download</h2>
+      <div class="concept">
+        <span class="label">concept</span>
+        <p>A file download is a browser event, not a page navigation — you have to start listening for it <em>before</em> you click, or you might miss it. That's why the click and the wait are wrapped in <code>Promise.all</code>: both start at the same instant, instead of racing each other.</p>
+      </div>
+      <pre>const fs = require('fs');
+
+test('PDF download button produces a real PDF', async ({ page }) => {
+  await page.goto('http://localhost:8080/resume.html?slug=divya-kodukula');
+  const [download] = await Promise.all([
+    page.waitForEvent('download'),
+    page.getByTestId('download-pdf').click(),
+  ]);
+  const buf = fs.readFileSync(await download.path());
+  expect(buf.subarray(0, 4).toString()).toBe('%PDF');
+});</pre>
+      <pre class="cmd">npx playwright test</pre>
+      <pre class="output">  <span class="ok">✓</span>  1 tests/smoke.spec.js:4:1 › PDF download button produces a real PDF (247ms)
+
+  1 passed (517ms)</pre>
+      <p>Same principle as the API tutorial's PDF test: reading the actual bytes, not just "the click didn't throw," is what catches a download that silently produced an empty or wrong file.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-body">
+      <h2>Graduate to the real suite</h2>
+      <p>The real <a href="https://github.com/divyakodu/learning-lab/tree/main/ui-playwright"><code>ui-playwright</code></a> stack extends exactly this — plus the not-found case and the back-link — using TypeScript and Playwright's config file instead of one script. Run it:</p>
+      <pre class="cmd">cd learning-lab/ui-playwright
+./setup.sh
+./run.sh</pre>
+      <pre class="output">  <span class="ok">✓</span>  2 [chromium] › resume-detail.spec.ts:5:5 › detail page shows name, headline, and summary
+  <span class="ok">✓</span>  6 [chromium] › resume-list.spec.ts:5:5 › resume list renders at least one entry
+  <span class="ok">✓</span>  5 [chromium] › downloads.spec.ts:17:5 › DOCX download button produces a real DOCX
+  <span class="ok">✓</span>  4 [chromium] › resume-detail.spec.ts:20:5 › unknown slug shows a not-found message
+  <span class="ok">✓</span>  1 [chromium] › resume-detail.spec.ts:13:5 › back link returns to the resume list
+  <span class="ok">✓</span>  7 [chromium] › resume-list.spec.ts:11:5 › clicking a resume link navigates to its detail page
+  <span class="ok">✓</span>  3 [chromium] › downloads.spec.ts:6:5 › PDF download button produces a real PDF
+
+  7 passed (1.0s)</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">6</div>
+    <div class="step-body">
+      <h2>Now break it, on purpose</h2>
+      <ul class="practice">
+        <li>In <code>resume-app/frontend/html-js/js/app.js</code>, change <code>resume-link-${r.slug}</code> to <code>link-${r.slug}</code> in <code>loadList()</code> — no rebuild needed, just refresh. The list test times out after 5s, unable to find the renamed testid.</li>
+        <li>In the same file's <code>loadDetail()</code>, delete the line assigning <code>pdf-link</code>'s <code>href</code>. The download test fails — clicking has nowhere to point, so no download event ever fires.</li>
+      </ul>
+      <p>Undo each change and confirm you're back to 7/7 before moving on.</p>
+    </div>
+  </div>
+
+  <div class="nav-footer">
+    <a href="api-pytest.html">&larr; Back: pytest</a>
+    <a href="load-locust.html">Next: learn Locust &rarr;</a>
+  </div>
+
+  <footer class="page-footer">learning-lab · docs/ui-playwright.html · every command and output above was actually run.</footer>
+
+</div>
