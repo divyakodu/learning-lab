@@ -1,0 +1,264 @@
+<!doctype html>
+<title>Learn Selenium by testing resume-app</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #eef0f0; --surface: #ffffff; --surface-2: #e3e8ea;
+    --ink: #1b2430; --ink-soft: #56636f; --line: #c7d0d4;
+    --accent: #2b5d8c; --accent-soft: #dce7f0;
+    --success: #3f7d58; --success-soft: #dfeee5;
+    --warn: #b5651d; --warn-soft: #f3e3d2;
+    --font-display: Iowan Old Style, "Palatino Linotype", Palatino, Georgia, serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10161d; --surface: #182029; --surface-2: #1f2833;
+      --ink: #dde3e8; --ink-soft: #93a2ac; --line: #2b3743;
+      --accent: #6ba8da; --accent-soft: #1c2c3a;
+      --success: #6fbe8c; --success-soft: #17281f;
+      --warn: #d9a15b; --warn-soft: #2b2013;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10161d; --surface: #182029; --surface-2: #1f2833;
+    --ink: #dde3e8; --ink-soft: #93a2ac; --line: #2b3743;
+    --accent: #6ba8da; --accent-soft: #1c2c3a;
+    --success: #6fbe8c; --success-soft: #17281f;
+    --warn: #d9a15b; --warn-soft: #2b2013;
+  }
+  :root[data-theme="light"] {
+    --bg: #eef0f0; --surface: #ffffff; --surface-2: #e3e8ea;
+    --ink: #1b2430; --ink-soft: #56636f; --line: #c7d0d4;
+    --accent: #2b5d8c; --accent-soft: #dce7f0;
+    --success: #3f7d58; --success-soft: #dfeee5;
+    --warn: #b5651d; --warn-soft: #f3e3d2;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--font-body); font-size: 16px; line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { max-width: 760px; margin: 0 auto; padding: clamp(28px, 5vw, 64px) clamp(18px, 4vw, 28px) 80px; }
+  a { color: var(--accent); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  p { max-width: 68ch; }
+
+  .breadcrumb { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--ink-soft); margin: 0 0 18px; }
+  header.masthead { border-bottom: 1px solid var(--line); padding-bottom: 22px; margin-bottom: 44px; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--ink-soft); margin: 0 0 8px;
+  }
+  h1 {
+    font-family: var(--font-display); font-size: clamp(1.7rem, 1.3rem + 1.6vw, 2.3rem);
+    font-weight: 600; margin: 0 0 10px; text-wrap: balance;
+  }
+  .dek { font-size: 1.0625rem; color: var(--ink-soft); max-width: 62ch; margin: 0 0 4px; }
+  .meta { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--ink-soft); margin-top: 14px; }
+
+  .step { display: grid; grid-template-columns: 34px 1fr; gap: 16px; margin-bottom: 40px; }
+  .step-num {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--accent-soft); color: var(--accent);
+    display: flex; align-items: center; justify-content: center; font-family: var(--font-mono);
+    font-size: 0.9375rem; font-weight: 600; flex-shrink: 0;
+  }
+  .step-body h2 { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; margin: 4px 0 10px; }
+  .step-body > p { margin: 0 0 12px; color: var(--ink-soft); }
+  .step-body > p:last-child { margin-bottom: 0; }
+
+  .concept {
+    background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0; padding: 12px 16px; margin: 12px 0; font-size: 0.9375rem;
+  }
+  .concept p { margin: 0; max-width: none; }
+  .concept .label { font-family: var(--font-mono); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); display: block; margin-bottom: 4px; }
+
+  .callout {
+    background: var(--warn-soft); border: 1px solid var(--warn); border-radius: 6px;
+    padding: 12px 16px; font-size: 0.9375rem; margin: 12px 0;
+  }
+  .callout p { margin: 0; max-width: none; }
+
+  pre {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px;
+    overflow-x: auto; font-family: var(--font-mono); font-size: 0.8125rem; line-height: 1.55; margin: 10px 0;
+  }
+  pre.cmd { border-left: 3px solid var(--ink-soft); }
+  pre.cmd::before { content: "$ "; color: var(--ink-soft); }
+  pre.output { background: var(--surface-2); color: var(--ink-soft); }
+  pre.output .ok { color: var(--success); }
+  pre.output .fail { color: var(--warn); }
+  pre .c { color: var(--ink-soft); }
+
+  .file-label { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-soft); margin: 14px 0 -4px; display: block; }
+
+  .practice { display: flex; flex-direction: column; gap: 10px; }
+  .practice li { list-style: none; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px 16px; font-size: 0.9375rem; }
+  .practice code { font-family: var(--font-mono); background: var(--surface-2); padding: 1px 6px; border-radius: 3px; font-size: 0.85em; }
+
+  .nav-footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; border-top: 1px solid var(--line); padding-top: 20px; margin-top: 8px; font-size: 0.9375rem; }
+  footer.page-footer { border-top: 1px solid var(--line); padding-top: 18px; color: var(--ink-soft); font-size: 0.8125rem; margin-top: 40px; }
+</style>
+
+<div class="page">
+
+  <p class="breadcrumb"><a href="index.html">learning-lab</a> / selenium-python tutorial</p>
+
+  <header class="masthead">
+    <p class="eyebrow">tutorial · build along</p>
+    <h1>Learn Selenium by testing resume-app's UI</h1>
+    <p class="dek">Same question as the Playwright tutorial — does it work for a user? — answered with a different, older, more manual tool. The contrast is the point: Selenium won't wait for you the way Playwright does, and that turns out to matter a lot.</p>
+    <p class="meta">~15 minutes · needs resume-app running, Python 3, and a real Chrome install</p>
+  </header>
+
+  <div class="step">
+    <div class="step-num">0</div>
+    <div class="step-body">
+      <h2>Before you start</h2>
+      <pre class="cmd">cd resume-app
+scripts/start.sh</pre>
+      <pre class="cmd">mkdir selenium-tutorial &amp;&amp; cd selenium-tutorial
+python3 -m venv .venv
+.venv/bin/pip install selenium pytest requests</pre>
+      <div class="concept">
+        <span class="label">concept</span>
+        <p>Selenium drives a real browser through the <b>WebDriver protocol</b> — an actual W3C standard, supported by every major browser vendor, not just Chrome. That's Selenium's whole reason for existing: the same test code can, in principle, run against Chrome, Firefox, or Safari by swapping which driver you launch. Modern Selenium (4.6+) includes <b>Selenium Manager</b>, which auto-downloads the matching driver binary for whatever browser you have installed — you still need the actual browser, just not the driver.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <h2>The smallest possible test</h2>
+      <pre>from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
+opts = Options()
+opts.add_argument("--headless=new")
+driver = webdriver.Chrome(options=opts)
+driver.get("http://localhost:8080/index.html")
+print(driver.title)
+driver.quit()</pre>
+      <pre class="cmd">.venv/bin/python3 smoke.py</pre>
+      <pre class="output">Resume App</pre>
+      <p>Selenium Manager quietly resolved and launched a matching <code>chromedriver</code> the first time this ran — no separate download step, no version to pin by hand.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <h2>Why "just find the element" isn't enough</h2>
+      <div class="concept">
+        <span class="label">concept</span>
+        <p>Playwright's <code>getByTestId(...).click()</code> automatically waits for the element to exist and be actionable. Selenium's <code>find_element(...)</code> does not — it looks <em>right now</em>, and throws <code>NoSuchElementException</code> if the page hasn't rendered the element yet. On a fast local app like resume-app this rarely bites, but on anything with real network latency, a naive test becomes flaky exactly when it matters most.</p>
+      </div>
+      <p>The fix is to wait explicitly, for a specific condition, with a timeout:</p>
+      <pre>from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+
+def test_resume_list_shows_known_resume(driver):
+    driver.get("http://localhost:8080/index.html")
+    link = WebDriverWait(driver, 5).until(
+        EC.visibility_of_element_located(
+            (By.CSS_SELECTOR, '[data-testid="resume-link-divya-kodukula"]')
+        )
+    )
+    assert link.is_displayed()</pre>
+      <pre class="cmd">.venv/bin/pytest -v smoke_test.py</pre>
+      <pre class="output">smoke_test.py::test_resume_list_shows_known_resume <span class="ok">PASSED</span>
+
+1 passed in 0.42s</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <h2>Script a click and check navigation</h2>
+      <pre>def test_clicking_resume_link_navigates_to_detail(driver):
+    driver.get("http://localhost:8080/index.html")
+    link = WebDriverWait(driver, 5).until(
+        EC.element_to_be_clickable(
+            (By.CSS_SELECTOR, '[data-testid="resume-link-divya-kodukula"]')
+        )
+    )
+    link.click()
+    WebDriverWait(driver, 5).until(EC.url_contains("slug=divya-kodukula"))
+    name = driver.find_element(By.CSS_SELECTOR, '[data-testid="resume-name"]')
+    assert name.text == "Divya Kodukula"</pre>
+      <pre class="output">PASSED</pre>
+      <p>Note the plain <code>find_element</code> for reading <code>name.text</code> at the end, with no wait — by that point <code>EC.url_contains</code> already proved the navigation completed, so the element is guaranteed to exist. Waits belong at the moment of uncertainty, not sprinkled everywhere out of habit.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <h2>Downloads: the part Selenium makes you do by hand</h2>
+      <div class="concept">
+        <span class="label">concept</span>
+        <p>Playwright exposes <code>page.waitForEvent("download")</code>. Selenium has no equivalent — headless Chrome doesn't even allow downloads by default. Verified two ways to unblock it: a Chrome <code>prefs</code> dict setting a download directory, or the <code>Page.setDownloadBehavior</code> CDP command. On the Chrome version used here, <b>either alone was sufficient</b> — but since headless download behavior has changed across Chrome versions before, using both together is deliberate redundancy, not decoration.</p>
+      </div>
+      <pre>opts.add_experimental_option("prefs", {
+    "download.default_directory": download_dir,
+    "download.prompt_for_download": False,
+})
+driver.execute_cdp_cmd(
+    "Page.setDownloadBehavior", {"behavior": "allow", "downloadPath": download_dir}
+)
+button.click()
+# ...then poll the filesystem, since there's no download event to await
+while not os.listdir(download_dir):
+    time.sleep(0.2)</pre>
+      <div class="callout">
+        <p><b>Verified:</b> remove <em>both</em> mechanisms and the click still fires, but no file ever appears within a 10s poll — Chrome has nowhere it's allowed to save it. Remove only one and leave the other, and it still works — that asymmetry is worth seeing once, in step 6.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-body">
+      <h2>Graduate to the real suite</h2>
+      <p>The real <a href="https://github.com/divyakodu/learning-lab/tree/main/selenium-python"><code>selenium-python</code></a> stack covers list, detail, the not-found case, the back link, and both downloads — same coverage as <code>ui-playwright</code>, deliberately, so the two are comparable side by side.</p>
+      <pre class="cmd">cd learning-lab/selenium-python
+./setup.sh
+./run.sh</pre>
+      <pre class="output">tests/test_downloads.py::test_pdf_download_button_produces_a_real_pdf <span class="ok">PASSED</span>
+tests/test_downloads.py::test_docx_download_button_produces_a_real_docx <span class="ok">PASSED</span>
+tests/test_resume_detail.py::test_detail_page_shows_name_headline_summary <span class="ok">PASSED</span>
+tests/test_resume_detail.py::test_back_link_returns_to_list <span class="ok">PASSED</span>
+tests/test_resume_detail.py::test_unknown_slug_shows_not_found <span class="ok">PASSED</span>
+tests/test_resume_list.py::test_resume_list_shows_known_resume <span class="ok">PASSED</span>
+tests/test_resume_list.py::test_clicking_resume_link_navigates_to_detail <span class="ok">PASSED</span>
+
+7 passed in 4.90s</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">6</div>
+    <div class="step-body">
+      <h2>Now break it, on purpose</h2>
+      <ul class="practice">
+        <li>In <code>conftest.py</code>, delete the whole <code>prefs</code> block, <b>and</b> in <code>tests/test_downloads.py</code> delete both <code>execute_cdp_cmd</code> calls. Rerun — both download tests fail with <code>TimeoutError: No completed download appeared in ... within 10s</code>. Removing only one of the two (not both) doesn't reproduce this — verified, either alone still works.</li>
+      </ul>
+      <p>Undo the change and confirm you're back to 7/7.</p>
+    </div>
+  </div>
+
+  <div class="nav-footer">
+    <a href="ui-playwright.html">&larr; Back: Playwright</a>
+    <a href="load-locust.html">Next: learn Locust &rarr;</a>
+  </div>
+
+  <footer class="page-footer">learning-lab · docs/selenium-python.html · every command and output above was actually run.</footer>
+
+</div>
