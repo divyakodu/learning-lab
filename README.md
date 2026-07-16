@@ -33,7 +33,7 @@ if you're pointing at something else.
 | Stack | Tooling | What it covers | Status |
 |---|---|---|---|
 | [api-pytest](api-pytest/) | pytest + requests | REST API: health, resume list/detail, PDF/DOCX downloads, nginx load balancing | Done |
-| ui-playwright | Playwright (TS) | Browser-driven UI flows using the frontend's `data-testid` hooks | Planned |
+| [ui-playwright](ui-playwright/) | Playwright (TS) | Browser-driven UI flows using the frontend's `data-testid` hooks, incl. real PDF/DOCX download verification | Done |
 
 More stacks (Selenium, Cypress, etc.) may be added the same way — copy the
 shape above.
