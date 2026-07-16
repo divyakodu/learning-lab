@@ -1,0 +1,51 @@
+# api-pytest
+
+REST API test suite for resume-app, using pytest + requests.
+
+## What this tests
+
+- `GET /api/health` returns `{"status": "ok", "instance": ...}`
+- `GET /api/resumes` lists resume summaries, including the known
+  `divya-kodukula` slug, with the expected shape
+- `GET /api/resumes/{slug}` returns full resume detail; unknown slugs 404
+- `GET /api/resumes/{slug}/pdf` and `/docx` return valid, correctly
+  content-typed files; unknown slugs 404
+- nginx load balancing: repeated `/api/health` calls round-robin across
+  both `backend1` and `backend2`, and responses carry an `X-Served-By`
+  header
+
+## Setup
+
+Requires resume-app running first (`../../resume-app/scripts/start.sh`,
+serving at `http://localhost:8080`).
+
+```
+./setup.sh
+```
+
+Creates a local `.venv` and installs `requirements.txt` into it. Only
+touches this folder -- no global/system Python packages.
+
+## Run
+
+```
+./run.sh
+```
+
+Runs the full suite with `pytest -v`. Any extra arguments are passed
+through to pytest, e.g. `./run.sh -k pdf` or `./run.sh -x`.
+
+If resume-app isn't reachable, the suite exits immediately with a message
+telling you to start it, instead of failing test-by-test.
+
+To point at a different instance (e.g. a deployed one):
+
+```
+RESUME_APP_URL=https://example.com ./run.sh
+```
+
+## Last verified run
+
+```
+10 passed in 0.25s
+```
