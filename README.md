@@ -34,6 +34,7 @@ if you're pointing at something else.
 |---|---|---|---|
 | [api-pytest](api-pytest/) | pytest + requests | REST API: health, resume list/detail, PDF/DOCX downloads, nginx load balancing | Done |
 | [ui-playwright](ui-playwright/) | Playwright (TS) | Browser-driven UI flows using the frontend's `data-testid` hooks, incl. real PDF/DOCX download verification | Done |
+| [load-locust](load-locust/) | Locust | Load/performance: throughput and response-time percentiles under concurrent load, not just pass/fail | Done |
 
 More stacks (Selenium, Cypress, etc.) may be added the same way — copy the
 shape above.

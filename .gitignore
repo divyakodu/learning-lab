@@ -5,4 +5,6 @@ __pycache__/
 node_modules/
 test-results/
 playwright-report/
+report.html
+report_*.csv
 .DS_Store
