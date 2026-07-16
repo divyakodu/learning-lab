@@ -6,6 +6,7 @@ import pytest
 import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 
 BASE_URL = os.environ.get("RESUME_APP_URL", "http://localhost:8080")
 KNOWN_SLUG = "divya-kodukula"
@@ -40,6 +41,8 @@ def download_dir():
 def driver(download_dir):
     opts = Options()
     opts.add_argument("--headless=new")
+    opts.add_argument("--no-sandbox")
+    opts.add_argument("--disable-dev-shm-usage")
     opts.add_experimental_option(
         "prefs",
         {
@@ -48,6 +51,18 @@ def driver(download_dir):
             "safebrowsing.enabled": True,
         },
     )
-    d = webdriver.Chrome(options=opts)
+    # Selenium Manager (the pip package's auto-resolver) has no linux/aarch64
+    # build at all -- verified, it fails with "Unsupported platform/
+    # architecture combination: linux/aarch64". On that platform (e.g. this
+    # project's Jenkins container), fall back to apt's chromium + chromium-
+    # driver, pointed at explicitly. Elsewhere (e.g. local macOS), neither
+    # binary exists at these paths, so Selenium Manager runs as normal.
+    chromium_bin = shutil.which("chromium") or shutil.which("chromium-browser")
+    chromedriver_bin = shutil.which("chromedriver")
+    if chromium_bin and chromedriver_bin:
+        opts.binary_location = chromium_bin
+        d = webdriver.Chrome(service=Service(executable_path=chromedriver_bin), options=opts)
+    else:
+        d = webdriver.Chrome(options=opts)
     yield d
     d.quit()

@@ -7,6 +7,7 @@ set -e
 cd "$(dirname "$0")"
 
 npm install
+npx cypress install
 npx cypress verify
 
 echo ""
