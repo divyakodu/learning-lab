@@ -7,4 +7,7 @@ test-results/
 playwright-report/
 report.html
 report_*.csv
+cypress/screenshots/
+cypress/videos/
+cypress/downloads/
 .DS_Store

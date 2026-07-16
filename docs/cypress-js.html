@@ -1,0 +1,248 @@
+<!doctype html>
+<title>Learn Cypress by testing resume-app</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #eef0f0; --surface: #ffffff; --surface-2: #e3e8ea;
+    --ink: #1b2430; --ink-soft: #56636f; --line: #c7d0d4;
+    --accent: #2b5d8c; --accent-soft: #dce7f0;
+    --success: #3f7d58; --success-soft: #dfeee5;
+    --warn: #b5651d; --warn-soft: #f3e3d2;
+    --font-display: Iowan Old Style, "Palatino Linotype", Palatino, Georgia, serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10161d; --surface: #182029; --surface-2: #1f2833;
+      --ink: #dde3e8; --ink-soft: #93a2ac; --line: #2b3743;
+      --accent: #6ba8da; --accent-soft: #1c2c3a;
+      --success: #6fbe8c; --success-soft: #17281f;
+      --warn: #d9a15b; --warn-soft: #2b2013;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10161d; --surface: #182029; --surface-2: #1f2833;
+    --ink: #dde3e8; --ink-soft: #93a2ac; --line: #2b3743;
+    --accent: #6ba8da; --accent-soft: #1c2c3a;
+    --success: #6fbe8c; --success-soft: #17281f;
+    --warn: #d9a15b; --warn-soft: #2b2013;
+  }
+  :root[data-theme="light"] {
+    --bg: #eef0f0; --surface: #ffffff; --surface-2: #e3e8ea;
+    --ink: #1b2430; --ink-soft: #56636f; --line: #c7d0d4;
+    --accent: #2b5d8c; --accent-soft: #dce7f0;
+    --success: #3f7d58; --success-soft: #dfeee5;
+    --warn: #b5651d; --warn-soft: #f3e3d2;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--font-body); font-size: 16px; line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { max-width: 760px; margin: 0 auto; padding: clamp(28px, 5vw, 64px) clamp(18px, 4vw, 28px) 80px; }
+  a { color: var(--accent); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  p { max-width: 68ch; }
+
+  .breadcrumb { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--ink-soft); margin: 0 0 18px; }
+  header.masthead { border-bottom: 1px solid var(--line); padding-bottom: 22px; margin-bottom: 44px; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--ink-soft); margin: 0 0 8px;
+  }
+  h1 {
+    font-family: var(--font-display); font-size: clamp(1.7rem, 1.3rem + 1.6vw, 2.3rem);
+    font-weight: 600; margin: 0 0 10px; text-wrap: balance;
+  }
+  .dek { font-size: 1.0625rem; color: var(--ink-soft); max-width: 62ch; margin: 0 0 4px; }
+  .meta { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--ink-soft); margin-top: 14px; }
+
+  .step { display: grid; grid-template-columns: 34px 1fr; gap: 16px; margin-bottom: 40px; }
+  .step-num {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--accent-soft); color: var(--accent);
+    display: flex; align-items: center; justify-content: center; font-family: var(--font-mono);
+    font-size: 0.9375rem; font-weight: 600; flex-shrink: 0;
+  }
+  .step-body h2 { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; margin: 4px 0 10px; }
+  .step-body > p { margin: 0 0 12px; color: var(--ink-soft); }
+  .step-body > p:last-child { margin-bottom: 0; }
+
+  .concept {
+    background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0; padding: 12px 16px; margin: 12px 0; font-size: 0.9375rem;
+  }
+  .concept p { margin: 0; max-width: none; }
+  .concept .label { font-family: var(--font-mono); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); display: block; margin-bottom: 4px; }
+
+  .callout {
+    background: var(--warn-soft); border: 1px solid var(--warn); border-radius: 6px;
+    padding: 12px 16px; font-size: 0.9375rem; margin: 12px 0;
+  }
+  .callout p { margin: 0; max-width: none; }
+
+  pre {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px;
+    overflow-x: auto; font-family: var(--font-mono); font-size: 0.8125rem; line-height: 1.55; margin: 10px 0;
+  }
+  pre.cmd { border-left: 3px solid var(--ink-soft); }
+  pre.cmd::before { content: "$ "; color: var(--ink-soft); }
+  pre.output { background: var(--surface-2); color: var(--ink-soft); }
+  pre.output .ok { color: var(--success); }
+  pre .c { color: var(--ink-soft); }
+
+  .file-label { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-soft); margin: 14px 0 -4px; display: block; }
+
+  .practice { display: flex; flex-direction: column; gap: 10px; }
+  .practice li { list-style: none; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px 16px; font-size: 0.9375rem; }
+  .practice code { font-family: var(--font-mono); background: var(--surface-2); padding: 1px 6px; border-radius: 3px; font-size: 0.85em; }
+
+  .nav-footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; border-top: 1px solid var(--line); padding-top: 20px; margin-top: 8px; font-size: 0.9375rem; }
+  footer.page-footer { border-top: 1px solid var(--line); padding-top: 18px; color: var(--ink-soft); font-size: 0.8125rem; margin-top: 40px; }
+</style>
+
+<div class="page">
+
+  <p class="breadcrumb"><a href="index.html">learning-lab</a> / cypress-js tutorial</p>
+
+  <header class="masthead">
+    <p class="eyebrow">tutorial · build along</p>
+    <h1>Learn Cypress by testing resume-app's UI</h1>
+    <p class="dek">A third answer to "does it work for a user?" — after Playwright (drives the browser from outside) and Selenium (drives it via the WebDriver protocol), Cypress takes a genuinely different architectural approach: it runs <em>inside</em> the browser, alongside your application.</p>
+    <p class="meta">~15 minutes · needs resume-app running and Node.js</p>
+  </header>
+
+  <div class="step">
+    <div class="step-num">0</div>
+    <div class="step-body">
+      <h2>Before you start</h2>
+      <pre class="cmd">cd resume-app
+scripts/start.sh</pre>
+      <pre class="cmd">mkdir cypress-tutorial &amp;&amp; cd cypress-tutorial
+npm init -y
+npm install cypress</pre>
+      <div class="concept">
+        <span class="label">concept</span>
+        <p>Playwright and Selenium both drive a browser <em>from the outside</em> — a separate process sends commands over a protocol (CDP, WebDriver). Cypress instead injects its test runner directly into the browser tab your app is running in. That's why its commands can be so aggressively auto-retrying: there's no network round-trip between "check if this element exists" and the actual DOM.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <h2>The smallest possible test</h2>
+      <span class="file-label">cypress.config.js</span>
+      <pre>const { defineConfig } = require("cypress");
+module.exports = defineConfig({
+  e2e: { baseUrl: "http://localhost:8080", supportFile: false },
+});</pre>
+      <span class="file-label">cypress/e2e/smoke.cy.js</span>
+      <pre>describe("resume-app", () => {
+  it("loads the homepage", () => {
+    cy.visit("/index.html");
+    cy.get('[data-testid="resume-list"]').should("be.visible");
+  });
+});</pre>
+      <pre class="cmd">npx cypress run</pre>
+      <pre class="output">Running:  smoke.cy.js
+
+  resume-app
+    <span class="ok">✓</span> loads the homepage
+
+  1 passing (Xms)</pre>
+      <p>The first run downloads Cypress's actual browser-automation binary — around 550MB unpacked, cached globally in <code>~/Library/Caches/Cypress</code> and shared across every project using the same version, so it's a one-time cost, not a per-project one.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <h2>Commands retry themselves — you don't ask them to</h2>
+      <div class="concept">
+        <span class="label">concept</span>
+        <p>Neither <code>cy.get(...)</code> nor <code>.should(...)</code> fail instantly if the element isn't there yet — Cypress retries the whole chain for up to 4 seconds by default before giving up. Compare this to the pytest tutorial's explicit assertions or Selenium's explicit <code>WebDriverWait</code>: Cypress's retrying is a global default you opt out of, not a wait you opt into per line.</p>
+      </div>
+      <pre>it("shows the known resume", () => {
+  cy.visit("/index.html");
+  cy.get('[data-testid="resume-list"]').should("be.visible");
+  cy.get('[data-testid="resume-link-divya-kodukula"]').should("be.visible");
+});</pre>
+      <pre class="output">1 passing</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <h2>Click, navigate, assert</h2>
+      <pre>it("navigates to the detail page on click", () => {
+  cy.visit("/index.html");
+  cy.get('[data-testid="resume-link-divya-kodukula"]').click();
+  cy.url().should("include", "slug=divya-kodukula");
+  cy.get('[data-testid="resume-name"]').should("have.text", "Divya Kodukula");
+});</pre>
+      <pre class="output">1 passing</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <h2>Downloads: the pleasant surprise</h2>
+      <div class="concept">
+        <span class="label">concept</span>
+        <p>Recall the Selenium tutorial: headless Chrome blocks downloads by default, and unblocking them needed real investigation (a Chrome <code>prefs</code> dict, a CDP command). Cypress's bundled Electron browser has no such restriction to begin with — <code>cy.readFile()</code> against the configured downloads folder just works.</p>
+      </div>
+      <pre>it("PDF download produces a real PDF", () => {
+  cy.visit("/resume.html?slug=divya-kodukula");
+  cy.get('[data-testid="download-pdf"]').click();
+  const dir = Cypress.config("downloadsFolder");
+  cy.readFile(`${dir}/divya-kodukula.pdf`, "binary", { timeout: 10000 }).should(
+    (content) => expect(content.slice(0, 4)).to.eq("%PDF")
+  );
+});</pre>
+      <pre class="output">1 passing</pre>
+      <div class="callout">
+        <p><b>Verified:</b> this passed on the very first run, no workaround needed — a genuine, concrete difference between Cypress's in-browser architecture and Selenium/Playwright's external-driver approach, not just a config preference.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-body">
+      <h2>Graduate to the real suite</h2>
+      <p>The real <a href="https://github.com/divyakodu/learning-lab/tree/main/cypress-js"><code>cypress-js</code></a> stack covers list, detail, the not-found case, the back link, and both downloads — identical coverage to <code>ui-playwright</code> and <code>selenium-python</code>, deliberately, so all three are directly comparable.</p>
+      <pre class="cmd">cd learning-lab/cypress-js
+./setup.sh
+./run.sh</pre>
+      <pre class="output">  downloads.cy.js                          494ms   2   2   -   -   -
+  resume-detail.cy.js                      238ms   3   3   -   -   -
+  resume-list.cy.js                        215ms   2   2   -   -   -
+
+  <span class="ok">✔  All specs passed!</span>                        947ms   7   7   -   -   -</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">6</div>
+    <div class="step-body">
+      <h2>Now break it, on purpose</h2>
+      <ul class="practice">
+        <li>In <code>resume-app/frontend/html-js/js/app.js</code>, change <code>resume-link-${r.slug}</code> to <code>link-${r.slug}</code> in <code>loadList()</code> — refresh is enough, no rebuild. Rerun — <code>resume-list.cy.js</code> fails on both tests after Cypress's 4-second retry window: <code>AssertionError: Timed out retrying after 4000ms: Expected to find element: '[data-testid="resume-link-divya-kodukula"]', but never found it.</code> Two screenshots land in <code>cypress/screenshots/</code> automatically — Cypress captures those on any failure without being asked.</li>
+      </ul>
+      <p>Undo the change and confirm you're back to 7/7.</p>
+    </div>
+  </div>
+
+  <div class="nav-footer">
+    <a href="selenium-python.html">&larr; Back: Selenium</a>
+    <a href="load-locust.html">Next: learn Locust &rarr;</a>
+  </div>
+
+  <footer class="page-footer">learning-lab · docs/cypress-js.html · every command and output above was actually run.</footer>
+
+</div>
